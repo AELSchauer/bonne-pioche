@@ -1,0 +1,143 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg: #f6f3ec;
+  --color-surface: #ffffff;
+  --color-surface-alt: #f1ede2;
+  --color-border: #e2dccc;
+  --color-border-strong: #cfc6ac;
+  --color-text: #2c2a22;
+  --color-text-muted: #7c7460;
+  --color-text-faint: #a39a80;
+  --color-accent: #3f5d3f;
+  --color-accent-dark: #2e452e;
+  --color-accent-soft: #e7efe2;
+  --color-accent-contrast: #fbfaf5;
+  --color-danger: #b3432f;
+  --color-danger-soft: #f6e5e0;
+
+  --radius-sm: 7px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+
+  --font-ui: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  --font-brand: Georgia, "Iowan Old Style", "Palatino Linotype", serif;
+
+  --shadow-card: 0 1px 2px rgba(44, 42, 34, 0.04), 0 8px 24px rgba(44, 42, 34, 0.05);
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+body {
+  @apply bg-bg text-text font-ui text-sm leading-[1.45];
+  -webkit-font-smoothing: antialiased;
+}
+
+@layer components {
+  .card {
+    @apply bg-surface border border-border rounded-lg p-7 pb-8 shadow-card;
+  }
+
+  .card-flush {
+    @apply p-0 overflow-hidden;
+  }
+
+  .field-input {
+    @apply w-full px-3 py-2.25 font-ui text-sm text-text bg-surface border border-border-strong rounded-sm appearance-none;
+  }
+
+  .field-input:focus {
+    @apply outline-none border-accent ring-[3px] ring-accent-soft;
+  }
+
+  select.field-input {
+    @apply pr-8;
+    background-image: linear-gradient(45deg, transparent 50%, var(--color-text-muted) 50%), linear-gradient(135deg, var(--color-text-muted) 50%, transparent 50%);
+    background-position: calc(100% - 18px) center, calc(100% - 13px) center;
+    background-size: 5px 5px, 5px 5px;
+    background-repeat: no-repeat;
+  }
+
+  .field-input-readonly {
+    @apply bg-surface-alt border-border text-text-muted cursor-default;
+  }
+
+  .field-input-readonly:focus {
+    @apply ring-0;
+  }
+
+  .btn {
+    @apply appearance-none rounded-sm px-4 py-2.25 font-ui text-[13.5px] font-semibold cursor-pointer border border-transparent leading-tight inline-flex items-center no-underline;
+  }
+
+  .btn-primary {
+    @apply bg-accent text-accent-contrast border-accent;
+  }
+
+  .btn-primary:hover {
+    @apply bg-accent-dark border-accent-dark;
+  }
+
+  .btn-secondary {
+    @apply bg-surface text-text border-border-strong;
+  }
+
+  .btn-secondary:hover {
+    @apply bg-surface-alt;
+  }
+
+  .btn-tertiary {
+    @apply bg-transparent text-text-muted border-transparent;
+  }
+
+  .btn-tertiary:hover {
+    @apply text-text;
+  }
+
+  .btn-sm {
+    @apply px-3 py-1.25 text-xs;
+  }
+
+  .chip {
+    @apply inline-flex items-center px-2.5 py-0.75 border border-border-strong rounded-full text-xs text-text-muted bg-surface-alt whitespace-nowrap;
+  }
+
+  .chip-toggle {
+    @apply relative cursor-pointer;
+  }
+
+  .chip-toggle input {
+    @apply absolute opacity-0 w-px h-px pointer-events-none;
+  }
+
+  .chip-toggle span {
+    @apply inline-flex items-center gap-1 px-3.5 py-1.5 border border-border-strong rounded-full text-[13px] text-text-muted bg-surface transition-colors duration-100;
+  }
+
+  .chip-toggle input:checked + span {
+    @apply bg-accent-soft border-accent text-accent-dark font-semibold;
+  }
+
+  .chip-toggle input:checked + span::after {
+    content: "\00d7";
+    margin-left: 2px;
+    font-weight: 700;
+  }
+
+  .chip-toggle input:focus-visible + span {
+    @apply outline-none border-accent ring-[3px] ring-accent-soft;
+  }
+
+  .status-badge {
+    @apply inline-flex items-center px-2.5 py-0.75 rounded-full text-xs font-semibold whitespace-nowrap text-text-muted bg-surface-alt;
+  }
+
+  .status-badge-active {
+    @apply text-accent-dark bg-accent-soft;
+  }
+}

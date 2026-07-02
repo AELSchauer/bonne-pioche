@@ -1,0 +1,14 @@
+<header class="flex items-center gap-4 px-7 py-3.5 bg-surface border-b border-border">
+  <div class="flex items-center gap-2.5">
+    <span class="flex items-center justify-center w-8 h-8 rounded-lg bg-accent text-accent-contrast font-brand font-bold text-sm">BP</span>
+    <span class="font-brand text-lg font-bold text-text">Bonne Pioche</span>
+  </div>
+  <nav class="flex items-center gap-[22px] ml-5 max-[540px]:hidden">
+    <span class="text-[13.5px] text-text-muted">Assemblies</span>
+    <%= link_to "Components", components_path,
+          class: "text-[13.5px] #{request.path.start_with?(components_path) ? "text-text font-semibold" : "text-text-muted"}" %>
+    <span class="text-[13.5px] text-text-muted">Suppliers</span>
+    <span class="text-[13.5px] text-text-muted">Reports</span>
+  </nav>
+  <div class="w-[30px] h-[30px] rounded-full bg-surface-alt border border-border ml-auto" aria-hidden="true"></div>
+</header>

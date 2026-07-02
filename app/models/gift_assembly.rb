@@ -1,0 +1,2 @@
+class GiftAssembly < Assembly
+end
