@@ -1,0 +1,13 @@
+<% option = li.object.line_item_options.first || li.object.line_item_options.build %>
+<div class="grid grid-cols-[1fr_110px_44px] gap-3 items-center py-2.5 border-b border-border last:border-b-0" data-nested-fields-target="item">
+  <%= li.fields_for :line_item_options, [ option ] do |opt| %>
+    <%= opt.hidden_field :is_primary, value: "1" %>
+    <%= opt.select :option_ref, grouped_options_for_select(@option_groups, opt.object.option_ref),
+          { include_blank: "Select component or sub-assembly" }, class: "field-input", required: true %>
+  <% end %>
+  <%= li.number_field :quantity, value: li.object.quantity || 1, min: 1, class: "field-input", required: true %>
+  <div class="flex justify-center">
+    <%= li.hidden_field :_destroy %>
+    <button type="button" class="btn btn-tertiary btn-sm" data-action="click->nested-fields#remove">Remove</button>
+  </div>
+</div>

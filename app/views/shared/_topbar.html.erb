@@ -4,7 +4,8 @@
     <span class="font-brand text-lg font-bold text-text">Bonne Pioche</span>
   </div>
   <nav class="flex items-center gap-[22px] ml-5 max-[540px]:hidden">
-    <span class="text-[13.5px] text-text-muted">Assemblies</span>
+    <%= link_to "Assemblies", assemblies_path,
+          class: "text-[13.5px] #{request.path.start_with?(assemblies_path) ? "text-text font-semibold" : "text-text-muted"}" %>
     <%= link_to "Components", components_path,
           class: "text-[13.5px] #{request.path.start_with?(components_path) ? "text-text font-semibold" : "text-text-muted"}" %>
     <span class="text-[13.5px] text-text-muted">Suppliers</span>

@@ -1,0 +1,131 @@
+<section class="mb-7.5 last:mb-0">
+  <h2 class="m-0 mb-4 text-[15px] font-bold">Basics</h2>
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-[22px] gap-y-5">
+    <div>
+      <span class="block mb-1.5 text-[13px] font-semibold text-text">Type</span>
+      <% if @assembly.persisted? %>
+        <input class="field-input field-input-readonly" type="text" readonly tabindex="-1"
+               value="<%= AssembliesController::TYPES.fetch(@assembly.type || "Assembly", @assembly.type) %>">
+        <p class="mt-1.5 text-xs text-text-faint">Assigned at creation; can't be changed.</p>
+      <% else %>
+        <% default_type = @selected_type.presence || AssembliesController::TYPES.keys.first %>
+        <%= select_tag "assembly[type]", options_for_select(AssembliesController::TYPES.to_a.map { |value, label| [ label, value ] }, default_type),
+              id: "assembly_type", class: "field-input" %>
+        <p class="mt-1.5 text-xs text-text-faint">Gift assemblies are sellable boxes; assemblies can be nested as sub-assemblies.</p>
+      <% end %>
+    </div>
+
+    <div>
+      <%= f.label :name, "Assembly name", class: "block mb-1.5 text-[13px] font-semibold text-text" %>
+      <%= f.text_field :name, placeholder: "e.g. Autumn Harvest Box", class: "field-input", required: true %>
+    </div>
+
+    <div class="sm:col-span-2">
+      <span class="block mb-1.5 text-[13px] font-semibold text-text">Primary SKU</span>
+      <% if @assembly.persisted? %>
+        <input class="field-input field-input-readonly" type="text" readonly tabindex="-1" value="<%= @assembly.sku %>">
+        <p class="mt-1.5 text-xs text-text-faint">Assigned at creation; can't be changed.</p>
+      <% else %>
+        <% default_sku_prefix = @selected_sku_prefix.presence || AssembliesController::SKU_PREFIXES.keys.first %>
+        <div class="flex gap-2.5" data-controller="sku" data-sku-next-numbers-value="<%= @next_sku_numbers.to_json %>">
+          <select class="field-input flex-none w-[180px]" id="assembly_sku_prefix" name="assembly[sku_prefix]"
+                  data-sku-target="prefix" data-action="change->sku#updateNumber">
+            <% AssembliesController::SKU_PREFIXES.each do |code, label| %>
+              <option value="<%= code %>" <%= "selected" if code == default_sku_prefix %>><%= "#{code} — #{label}" %></option>
+            <% end %>
+          </select>
+          <input class="field-input field-input-readonly flex-1" type="text" id="assembly_sku_number" readonly tabindex="-1"
+                 value="<%= @next_sku_numbers[default_sku_prefix] %>" data-sku-target="number">
+        </div>
+        <p class="mt-1.5 text-xs text-text-faint">Sequential per prefix; assigned automatically.</p>
+      <% end %>
+    </div>
+
+    <% selected_category = @assembly.subcategory&.category %>
+    <% subcategory_options = (selected_category&.subcategories || []).map { |s| [ s.name, s.id ] } %>
+    <% subcategories_by_category = @categories.each_with_object({}) { |category, hash| hash[category.id] = category.subcategories.order(:name).map { |s| { value: s.id, label: s.name } } } %>
+
+    <div data-controller="nested-select" data-nested-select-options-value="<%= subcategories_by_category.to_json %>">
+      <label class="block mb-1.5 text-[13px] font-semibold text-text" for="assembly_category_id">Category</label>
+      <select class="field-input" id="assembly_category_id" data-nested-select-target="parent"
+              data-action="change->nested-select#updateChild" required>
+        <option value="">Select category</option>
+        <% @categories.each do |category| %>
+          <option value="<%= category.id %>" <%= "selected" if category == selected_category %>><%= category.name %></option>
+        <% end %>
+      </select>
+    </div>
+
+    <div>
+      <%= f.label :subcategory_id, "Subcategory", class: "block mb-1.5 text-[13px] font-semibold text-text" %>
+      <%= f.select :subcategory_id, options_for_select(subcategory_options, @assembly.subcategory_id),
+            { include_blank: "Select subcategory" },
+            id: "assembly_subcategory_id", class: "field-input", data: { nested_select_target: "child" }, required: true %>
+    </div>
+
+    <div>
+      <%= f.label :status, "Status", class: "block mb-1.5 text-[13px] font-semibold text-text" %>
+      <%= f.select :status, AssembliesController::STATUSES.map { |value, label| [ label, value ] }, {}, id: "assembly_status", class: "field-input" %>
+      <p class="mt-1.5 text-xs text-text-faint">Draft &middot; Active &middot; Inactive &middot; Archived</p>
+    </div>
+  </div>
+</section>
+
+<section class="mb-7.5 last:mb-0">
+  <h2 class="m-0 mb-4 text-[15px] font-bold">Attributes</h2>
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-[22px] gap-y-5">
+    <div class="sm:col-span-2">
+      <span class="block mb-1.5 text-[13px] font-semibold text-text">Restrictions</span>
+      <div class="flex flex-wrap gap-2">
+        <% @restriction_options.each do |key| %>
+          <label class="chip-toggle">
+            <input type="checkbox" name="assembly[restrictions][]" value="<%= key %>"
+                   <%= "checked" if @assembly.restrictions.any? { |r| r.name == key } %>>
+            <span><%= AssembliesController::RESTRICTION_LABELS.fetch(key, key.humanize) %></span>
+          </label>
+        <% end %>
+      </div>
+      <p class="mt-1.5 text-xs text-text-faint">Dietary or handling qualities this assembly satisfies.</p>
+    </div>
+
+    <div class="sm:col-span-2">
+      <label class="block mb-1.5 text-[13px] font-semibold text-text" for="assembly_notes">Notes</label>
+      <%= text_area_tag "assembly[notes]", nil, id: "assembly_notes", class: "field-input resize-y min-h-20", rows: 4 %>
+    </div>
+  </div>
+</section>
+
+<section class="mt-2" data-controller="nested-fields">
+  <div class="flex items-center justify-between mb-4">
+    <h2 class="m-0 text-[15px] font-bold">Components</h2>
+    <button type="button" class="btn btn-secondary btn-sm" data-action="click->nested-fields#add">+ Add component</button>
+  </div>
+
+  <% active_line_items = @assembly.assembly_line_items.reject(&:marked_for_destruction?) %>
+
+  <% if active_line_items.any? %>
+    <div class="grid grid-cols-[1fr_110px_44px] gap-3 px-1 pb-2 text-xs font-bold uppercase tracking-wide text-text-faint">
+      <div>Component / sub-assembly</div>
+      <div>Qty</div>
+      <div></div>
+    </div>
+  <% end %>
+
+  <div data-nested-fields-target="list">
+    <%= f.fields_for :assembly_line_items do |li| %>
+      <%= render "line_item_fields", li: li %>
+    <% end %>
+  </div>
+
+  <p class="text-[13px] text-text-faint mt-2 <%= "hidden" if active_line_items.any? %>" data-nested-fields-target="empty">
+    No components added yet.
+  </p>
+
+  <template data-nested-fields-target="template">
+    <%= f.fields_for :assembly_line_items, AssemblyLineItem.new(line_item_options: [ LineItemOption.new ]), child_index: "NEW_RECORD" do |li| %>
+      <%= render "line_item_fields", li: li %>
+    <% end %>
+  </template>
+
+  <p class="mt-3 text-xs text-text-faint">Alternates, per-unit costing, and CSV import/export aren't supported yet.</p>
+</section>

@@ -1,4 +1,6 @@
 class ComponentsController < ApplicationController
+  include ManagesParts
+
   UNITS = %w[ea pack set g L].freeze
   STATUSES = { "draft" => "Draft", "active" => "Active", "inactive" => "Inactive", "archived" => "Archived" }.freeze
   RESTRICTION_LABELS = {
@@ -26,7 +28,7 @@ class ComponentsController < ApplicationController
     @component = Component.new(component_params)
 
     if @component.save
-      sync_restrictions
+      sync_restrictions(@component, :component)
       redirect_to components_path, notice: "Component saved."
     else
       load_form_collections
@@ -45,7 +47,7 @@ class ComponentsController < ApplicationController
     @component.image.purge if params.dig(:component, :remove_image) == "1"
 
     if @component.update(component_params.except(:sku_prefix))
-      sync_restrictions
+      sync_restrictions(@component, :component)
       redirect_to components_path, notice: "Component saved."
     else
       load_form_collections
@@ -68,27 +70,11 @@ class ComponentsController < ApplicationController
 
   def load_form_collections
     @restriction_options = Restriction.names.keys
-    @next_sku_numbers = next_sku_numbers
-    @categories = Category.includes(:subcategories).order(:name)
+    @next_sku_numbers = SKU_PREFIXES.keys.index_with { |prefix| next_sku_number(Component, prefix) }
+    @categories = categories_with_subcategories
   end
 
   def component_params
     params.require(:component).permit(:name, :subcategory_id, :status, :sku_prefix, :image)
-  end
-
-  def sync_restrictions
-    names = Array(params.dig(:component, :restrictions)).reject(&:blank?)
-    @component.restrictions.where.not(name: names).destroy_all
-    existing_names = @component.restrictions.pluck(:name)
-    (names - existing_names).each { |name| @component.restrictions.create(name: name) }
-  end
-
-  def next_sku_numbers
-    SKU_PREFIXES.keys.index_with { |prefix| next_sku_number(prefix) }
-  end
-
-  def next_sku_number(prefix)
-    last = Component.where(sku_prefix: prefix).maximum(:sku_number) || 0
-    "%04d" % (last + 1)
   end
 end
