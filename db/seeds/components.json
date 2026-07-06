@@ -1,72 +1,267 @@
 [
   {
-    "name": "Apricot Escape",
-    "sku": "GFT-00000001",
+    "name": "Apricot Escape Sachet",
+    "category": "Beverage",
+    "subcategory": "Tea",
     "restrictions": [
-      "Caffeine-Free"
+      "Caffeine-Free",
+      "Gluten-Free",
+      "Nut-Free",
+      "Kosher",
+      "Organic"
     ]
   },
   {
-    "name": "Bright Eyed",
-    "sku": "GFT-00000002",
+    "name": "Bright Eyed Sachet",
+    "category": "Beverage",
+    "subcategory": "Tea",
     "restrictions": [
-      "Caffeine-Free"
+      "Caffeine-Free",
+      "Gluten-Free",
+      "Nut-Free",
+      "Kosher",
+      "Organic"
     ]
   },
   {
-    "name": "Dark Chocolate Peppermint",
-    "sku": "GFT-00000003",
-    "restrictions": []
-  },
-  {
-    "name": "Earl Grey Crème",
-    "sku": "GFT-00000004",
-    "restrictions": []
-  },
-  {
-    "name": "Egyptian Chamomile",
-    "sku": "GFT-00000005",
+    "name": "Earl Grey Crème Sachet",
+    "category": "Beverage",
+    "subcategory": "Tea",
     "restrictions": [
-      "Caffeine-Free"
+      "Gluten-Free",
+      "Nut-Free",
+      "Kosher",
+      "Organic"
     ]
   },
   {
-    "name": "English Breakfast",
-    "sku": "GFT-00000006",
-    "restrictions": []
-  },
-  {
-    "name": "French Lemon Ginger",
-    "sku": "GFT-00000007",
+    "name": "Egyptian Chamomile Sachet",
+    "category": "Beverage",
+    "subcategory": "Tea",
     "restrictions": [
-      "Caffeine-Free"
+      "Caffeine-Free",
+      "Gluten-Free",
+      "Nut-Free",
+      "Kosher",
+      "Organic"
     ]
   },
   {
-    "name": "Green Pomogranate",
-    "sku": "GFT-00000008",
-    "restrictions": []
-  },
-  {
-    "name": "Happy",
-    "sku": "GFT-00000009",
-    "restrictions": []
-  },
-  {
-    "name": "Mint Green Tea",
-    "sku": "GFT-00000010",
-    "restrictions": []
-  },
-  {
-    "name": "Pacific Coast Mint",
-    "sku": "GFT-00000011",
+    "name": "English Breakfast Sachet",
+    "category": "Beverage",
+    "subcategory": "Tea",
     "restrictions": [
-      "Caffeine-Free"
+      "Gluten-Free",
+      "Nut-Free",
+      "Kosher",
+      "Organic"
     ]
   },
   {
-    "name": "Tali's Masala Chai",
-    "sku": "GFT-00000012",
-    "restrictions": []
+    "name": "French Lemon Ginger Sachet",
+    "category": "Beverage",
+    "subcategory": "Tea",
+    "restrictions": [
+      "Caffeine-Free",
+      "Gluten-Free",
+      "Nut-Free",
+      "Kosher",
+      "Organic"
+    ]
+  },
+  {
+    "name": "Green Pomogranate Sachet",
+    "category": "Beverage",
+    "subcategory": "Tea",
+    "restrictions": [
+      "Gluten-Free",
+      "Nut-Free",
+      "Kosher",
+      "Organic"
+    ]
+  },
+  {
+    "name": "Happy Sachet",
+    "category": "Beverage",
+    "subcategory": "Tea",
+    "restrictions": [
+      "Gluten-Free",
+      "Nut-Free",
+      "Kosher",
+      "Organic"
+    ]
+  },
+  {
+    "name": "Mint Green Sachet",
+    "category": "Beverage",
+    "subcategory": "Tea",
+    "restrictions": [
+      "Gluten-Free",
+      "Nut-Free",
+      "Kosher",
+      "Organic"
+    ]
+  },
+  {
+    "name": "Pacific Coast Mint Sachet",
+    "category": "Beverage",
+    "subcategory": "Tea",
+    "restrictions": [
+      "Caffeine-Free",
+      "Gluten-Free",
+      "Nut-Free",
+      "Kosher",
+      "Organic"
+    ]
+  },
+  {
+    "name": "Sleep Sachet",
+    "category": "Beverage",
+    "subcategory": "Tea",
+    "restrictions": [
+      "Caffeine-Free",
+      "Gluten-Free",
+      "Nut-Free",
+      "Kosher",
+      "Organic"
+    ]
+  },
+  {
+    "name": "Tali's Masala Chai Sachet",
+    "category": "Beverage",
+    "subcategory": "Tea",
+    "restrictions": [
+      "Gluten-Free",
+      "Nut-Free",
+      "Kosher",
+      "Organic"
+    ]
+  },
+  {
+    "name": "Apricot Escape Tin",
+    "category": "Beverage",
+    "subcategory": "Tea",
+    "restrictions": [
+      "Caffeine-Free",
+      "Gluten-Free",
+      "Nut-Free",
+      "Kosher",
+      "Organic"
+    ]
+  },
+  {
+    "name": "Bright Eyed Tin",
+    "category": "Beverage",
+    "subcategory": "Tea",
+    "restrictions": [
+      "Caffeine-Free",
+      "Gluten-Free",
+      "Nut-Free",
+      "Kosher",
+      "Organic"
+    ]
+  },
+  {
+    "name": "Earl Grey Crème Tin",
+    "category": "Beverage",
+    "subcategory": "Tea",
+    "restrictions": [
+      "Gluten-Free",
+      "Nut-Free",
+      "Kosher",
+      "Organic"
+    ]
+  },
+  {
+    "name": "Egyptian Chamomile Tin",
+    "category": "Beverage",
+    "subcategory": "Tea",
+    "restrictions": [
+      "Caffeine-Free",
+      "Gluten-Free",
+      "Nut-Free",
+      "Kosher",
+      "Organic"
+    ]
+  },
+  {
+    "name": "English Breakfast Tin",
+    "category": "Beverage",
+    "subcategory": "Tea",
+    "restrictions": [
+      "Gluten-Free",
+      "Nut-Free",
+      "Kosher",
+      "Organic"
+    ]
+  },
+  {
+    "name": "French Lemon Ginger Tin",
+    "category": "Beverage",
+    "subcategory": "Tea",
+    "restrictions": [
+      "Caffeine-Free",
+      "Gluten-Free",
+      "Nut-Free",
+      "Kosher",
+      "Organic"
+    ]
+  },
+  {
+    "name": "Green Pomogranate Tin",
+    "category": "Beverage",
+    "subcategory": "Tea",
+    "restrictions": [
+      "Gluten-Free",
+      "Nut-Free",
+      "Kosher",
+      "Organic"
+    ]
+  },
+  {
+    "name": "Happy Tin",
+    "category": "Beverage",
+    "subcategory": "Tea",
+    "restrictions": [
+      "Gluten-Free",
+      "Nut-Free",
+      "Kosher",
+      "Organic"
+    ]
+  },
+  {
+    "name": "Pacific Coast Mint Tin",
+    "category": "Beverage",
+    "subcategory": "Tea",
+    "restrictions": [
+      "Caffeine-Free",
+      "Gluten-Free",
+      "Nut-Free",
+      "Kosher",
+      "Organic"
+    ]
+  },
+  {
+    "name": "Sleep Tin",
+    "category": "Beverage",
+    "subcategory": "Tea",
+    "restrictions": [
+      "Caffeine-Free",
+      "Gluten-Free",
+      "Nut-Free",
+      "Kosher",
+      "Organic"
+    ]
+  },
+  {
+    "name": "Tali's Masala Chai Tin",
+    "category": "Beverage",
+    "subcategory": "Tea",
+    "restrictions": [
+      "Gluten-Free",
+      "Nut-Free",
+      "Kosher",
+      "Organic"
+    ]
   }
 ]
