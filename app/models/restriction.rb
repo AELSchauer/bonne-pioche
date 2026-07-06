@@ -4,6 +4,8 @@ class Restriction < ApplicationRecord
   enum :name, {
     caffeine_free: "Caffeine-Free",
     gluten_free: "Gluten Free",
-    nut_free: "Nut Free"
+    kosher: "Kosher",
+    nut_free: "Nut Free",
+    organic: "Organic"
   }
 end
