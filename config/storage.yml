@@ -14,6 +14,12 @@ s3:
   secret_access_key: <%= ENV["S3_SECRET_ACCESS_KEY"] %>
   region: <%= ENV.fetch("S3_REGION", "auto") %>
   bucket: <%= ENV["S3_BUCKET"] %>
+  # Recent aws-sdk-s3 versions default to sending AWS-specific integrity checksums
+  # that R2 (and other non-AWS S3-compatible providers) reject with
+  # "You can only specify one non-default checksum at a time." Opt back into the
+  # older, universally-compatible behavior.
+  request_checksum_calculation: when_required
+  response_checksum_validation: when_required
   <% if ENV["S3_ENDPOINT"].present? %>
   endpoint: <%= ENV["S3_ENDPOINT"] %>
   <% end %>
