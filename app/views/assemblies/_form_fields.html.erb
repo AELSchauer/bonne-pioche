@@ -103,18 +103,21 @@
 
   <% active_line_items = @assembly.assembly_line_items.reject(&:marked_for_destruction?) %>
 
-  <% if active_line_items.any? %>
-    <div class="grid grid-cols-[1fr_110px_44px] gap-3 px-1 pb-2 text-xs font-bold uppercase tracking-wide text-text-faint">
-      <div>Component / sub-assembly</div>
-      <div>Qty</div>
-      <div></div>
-    </div>
-  <% end %>
-
-  <div data-nested-fields-target="list">
-    <%= f.fields_for :assembly_line_items do |li| %>
-      <%= render "line_item_fields", li: li %>
-    <% end %>
+  <div class="overflow-x-auto <%= "hidden" unless active_line_items.any? %>" data-nested-fields-target="tableWrap">
+    <table class="w-full min-w-[480px] border-collapse">
+      <thead>
+        <tr>
+          <th class="text-left px-3 py-2 text-xs font-bold uppercase tracking-wide text-text-faint bg-surface-alt border-b border-border">Component / sub-assembly</th>
+          <th class="text-left px-3 py-2 text-xs font-bold uppercase tracking-wide text-text-faint bg-surface-alt border-b border-border w-28">Qty</th>
+          <th class="px-3 py-2 bg-surface-alt border-b border-border w-20"></th>
+        </tr>
+      </thead>
+      <tbody data-nested-fields-target="list">
+        <%= f.fields_for :assembly_line_items do |li| %>
+          <%= render "line_item_fields", li: li %>
+        <% end %>
+      </tbody>
+    </table>
   </div>
 
   <p class="text-[13px] text-text-faint mt-2 <%= "hidden" if active_line_items.any? %>" data-nested-fields-target="empty">

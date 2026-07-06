@@ -16,6 +16,7 @@ class AssembliesController < ApplicationController
 
   def new
     @assembly = Assembly.new
+    clone_from_assembly
     load_form_collections
   end
 
@@ -54,6 +55,24 @@ class AssembliesController < ApplicationController
 
   def assembly_class
     TYPES.key?(params.dig(:assembly, :type)) ? params[:assembly][:type].constantize : Assembly
+  end
+
+  def clone_from_assembly
+    source = Assembly.find_by(id: params[:clone_from])
+    return unless source
+
+    @assembly.name = "#{source.name} (copy)"
+    @assembly.subcategory_id = source.subcategory_id
+    @assembly.status = source.status
+    source.restrictions.each { |restriction| @assembly.restrictions.build(name: restriction.name) }
+    source.assembly_line_items.each do |line_item|
+      new_line_item = @assembly.assembly_line_items.build(quantity: line_item.quantity)
+      line_item.line_item_options.each do |option|
+        new_line_item.line_item_options.build(option_type: option.option_type, option_id: option.option_id, is_primary: option.is_primary)
+      end
+    end
+    @selected_type = source.type || "Assembly"
+    @selected_sku_prefix = source.sku_prefix
   end
 
   def load_form_collections

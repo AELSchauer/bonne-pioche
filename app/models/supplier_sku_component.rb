@@ -1,0 +1,2 @@
+class SupplierSkuComponent < ApplicationRecord
+end

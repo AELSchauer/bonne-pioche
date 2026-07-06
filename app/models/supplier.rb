@@ -1,7 +1,5 @@
 class Supplier < ApplicationRecord
-  enum :type, {
-    caffeine_free: "Caffeine-Free",
-    gluten_free: "Gluten Free",
-    nut_free: "Nut Free"
-  }
+  has_many :supplier_skus, dependent: :destroy
+
+  validates :name, presence: true
 end

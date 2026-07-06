@@ -1,11 +1,12 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["list", "template", "empty"]
+  static targets = ["list", "template", "empty", "tableWrap"]
 
   add(event) {
     event.preventDefault()
     if (this.hasEmptyTarget) this.emptyTarget.remove()
+    if (this.hasTableWrapTarget) this.tableWrapTarget.classList.remove("hidden")
     const content = this.templateTarget.innerHTML.replace(/NEW_RECORD/g, Date.now())
     this.listTarget.insertAdjacentHTML("beforeend", content)
   }

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_07_06_035150) do
+ActiveRecord::Schema[8.1].define(version: 2026_07_06_060958) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -132,25 +132,40 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_06_035150) do
     t.index ["category_id"], name: "index_subcategories_on_category_id"
   end
 
-  create_table "supplier_skus", force: :cascade do |t|
+  create_table "supplier_sku_components", force: :cascade do |t|
+    t.bigint "component_id", null: false
     t.datetime "created_at", null: false
     t.integer "msrp_cents"
     t.string "msrp_url"
-    t.string "name"
+    t.bigint "supplier_sku_id", null: false
     t.datetime "updated_at", null: false
     t.integer "wholesale_cost_cents"
     t.virtual "wholesale_per_unit_cost_cents", type: :integer, as: "ceiling(((wholesale_cost_cents / wholesale_quantity))::double precision)", stored: true
     t.integer "wholesale_quantity"
     t.string "wholesale_url"
+    t.index ["component_id"], name: "index_supplier_sku_components_on_component_id"
+    t.index ["supplier_sku_id", "component_id"], name: "idx_on_supplier_sku_id_component_id_08bf377de2", unique: true
+    t.index ["supplier_sku_id"], name: "index_supplier_sku_components_on_supplier_sku_id"
+  end
+
+  create_table "supplier_skus", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "name"
+    t.string "sku"
+    t.bigint "supplier_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["supplier_id"], name: "index_supplier_skus_on_supplier_id"
   end
 
   create_table "suppliers", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "name"
-    t.string "type"
     t.datetime "updated_at", null: false
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "supplier_sku_components", "components"
+  add_foreign_key "supplier_sku_components", "supplier_skus"
+  add_foreign_key "supplier_skus", "suppliers"
 end
