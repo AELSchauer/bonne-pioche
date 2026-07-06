@@ -86,12 +86,23 @@
       <span class="block mb-1.5 text-[13px] font-semibold text-text">Image</span>
       <div class="flex items-center justify-center min-h-24 border-[1.5px] border-dashed border-border-strong rounded-md bg-surface-alt cursor-pointer text-center p-3 data-[over=true]:border-accent data-[over=true]:bg-accent-soft"
            data-controller="dropzone" data-action="dragover->dropzone#over dragleave->dropzone#leave drop->dropzone#drop click->dropzone#browse">
-        <input type="file" name="component[image]" accept="image/*" class="sr-only"
-               data-dropzone-target="input" data-action="change->dropzone#change" hidden>
+        <%= f.file_field :image, accept: "image/*", hidden: true,
+              data: { dropzone_target: "input", action: "change->dropzone#change" } %>
         <div class="flex flex-col items-center gap-2" data-dropzone-target="preview">
-          <span class="text-[13px] text-text-faint">drop image or browse</span>
+          <% if @component.image.attached? %>
+            <%= image_tag @component.image, class: "max-h-16 max-w-full rounded-sm object-cover" %>
+            <span class="text-xs text-text-muted"><%= @component.image.filename %></span>
+          <% else %>
+            <span class="text-[13px] text-text-faint">drop image or browse</span>
+          <% end %>
         </div>
       </div>
+      <% if @component.image.attached? %>
+        <label class="flex items-center gap-2 mt-2 text-[13px] text-text-muted">
+          <input type="checkbox" name="component[remove_image]" value="1">
+          Remove current image
+        </label>
+      <% end %>
     </div>
 
     <div class="sm:col-span-2">

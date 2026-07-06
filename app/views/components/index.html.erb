@@ -55,7 +55,11 @@
                     <span class="status-badge <%= "status-badge-active" if component.status == "active" %>"><%= component.status.humanize %></span>
                   </td>
                   <td class="px-5 py-3.5 text-[13.5px] border-b border-border align-middle">
-                    <%= link_to "Edit", edit_component_path(component), class: "btn btn-secondary btn-sm" %>
+                    <div class="flex gap-2 justify-end">
+                      <%= link_to "View", component_path(component), class: "btn btn-tertiary btn-sm" %>
+                      <%= link_to "Clone", new_component_path(clone_from: component.id), class: "btn btn-tertiary btn-sm" %>
+                      <%= link_to "Edit", edit_component_path(component), class: "btn btn-secondary btn-sm" %>
+                    </div>
                   </td>
                 </tr>
               <% end %>

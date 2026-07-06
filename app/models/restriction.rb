@@ -8,4 +8,6 @@ class Restriction < ApplicationRecord
     nut_free: "Nut Free",
     organic: "Organic"
   }
+
+  validates :name, presence: true, uniqueness: { scope: :restrictable }
 end

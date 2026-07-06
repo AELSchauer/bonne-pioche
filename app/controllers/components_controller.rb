@@ -12,8 +12,13 @@ class ComponentsController < ApplicationController
     @components = Component.includes(:restrictions, subcategory: :category).order(:name).to_a
   end
 
+  def show
+    @component = Component.find(params[:id])
+  end
+
   def new
     @component = Component.new
+    clone_from_component
     load_form_collections
   end
 
@@ -37,6 +42,7 @@ class ComponentsController < ApplicationController
 
   def update
     @component = Component.find(params[:id])
+    @component.image.purge if params.dig(:component, :remove_image) == "1"
 
     if @component.update(component_params.except(:sku_prefix))
       sync_restrictions
@@ -49,6 +55,17 @@ class ComponentsController < ApplicationController
 
   private
 
+  def clone_from_component
+    source = Component.find_by(id: params[:clone_from])
+    return unless source
+
+    @component.name = "#{source.name} (copy)"
+    @component.subcategory_id = source.subcategory_id
+    @component.status = source.status
+    source.restrictions.each { |restriction| @component.restrictions.build(name: restriction.name) }
+    @selected_sku_prefix = source.sku_prefix
+  end
+
   def load_form_collections
     @restriction_options = Restriction.names.keys
     @next_sku_numbers = next_sku_numbers
@@ -56,7 +73,7 @@ class ComponentsController < ApplicationController
   end
 
   def component_params
-    params.require(:component).permit(:name, :subcategory_id, :status, :sku_prefix)
+    params.require(:component).permit(:name, :subcategory_id, :status, :sku_prefix, :image)
   end
 
   def sync_restrictions
