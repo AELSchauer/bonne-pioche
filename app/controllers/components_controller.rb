@@ -69,7 +69,6 @@ class ComponentsController < ApplicationController
 
   def load_form_collections
     @restriction_options = Restriction.names.keys
-    @next_sku_numbers = SKU_PREFIXES.keys.index_with { |prefix| next_sku_number(Component, prefix) }
   end
 
   def component_params

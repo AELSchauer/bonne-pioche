@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_07_07_042120) do
+ActiveRecord::Schema[8.1].define(version: 2026_07_07_044744) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -46,7 +46,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_07_042120) do
     t.datetime "created_at", null: false
     t.string "name"
     t.virtual "sku", type: :string, as: "(((sku_prefix)::text || '-'::text) || sku_number)", stored: true
-    t.integer "sku_number", default: -> { "nextval('assemblies_sequential_number_seq'::regclass)" }, null: false
+    t.integer "sku_number", null: false
     t.string "sku_prefix", null: false
     t.string "status"
     t.string "tier"
@@ -99,7 +99,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_07_042120) do
     t.datetime "created_at", null: false
     t.string "name"
     t.virtual "sku", type: :string, as: "(((sku_prefix)::text || '-'::text) || sku_number)", stored: true
-    t.integer "sku_number", default: -> { "nextval('components_sequential_number_seq'::regclass)" }, null: false
+    t.integer "sku_number", null: false
     t.string "sku_prefix", null: false
     t.string "status"
     t.string "type"
@@ -129,7 +129,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_07_042120) do
 
   create_table "orders", force: :cascade do |t|
     t.datetime "created_at", null: false
-    t.integer "order_number", default: -> { "nextval('orders_sequential_number_seq'::regclass)" }, null: false
+    t.integer "order_number", null: false
     t.string "status"
     t.datetime "updated_at", null: false
     t.index ["order_number"], name: "index_orders_on_order_number", unique: true

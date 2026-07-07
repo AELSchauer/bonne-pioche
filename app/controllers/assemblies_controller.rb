@@ -105,7 +105,6 @@ class AssembliesController < ApplicationController
 
   def load_form_collections
     @restriction_options = Restriction.names.keys
-    @next_sku_numbers = SKU_PREFIXES.keys.index_with { |prefix| next_sku_number(Assembly, prefix) }
     @decks = Deck.includes(:cards).order(:name)
     @option_groups = {
       "Components" => Component.order(:name).map { |c| [ c.name, "Component-#{c.id}" ] },
