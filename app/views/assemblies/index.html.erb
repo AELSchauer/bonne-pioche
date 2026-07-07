@@ -48,7 +48,7 @@
                 <% if assembly.restrictions.any? %>
                   <div class="flex flex-wrap gap-1.5">
                     <% assembly.restrictions.each do |exclusion| %>
-                      <span class="chip"><%= exclusion.name.humanize %></span>
+                      <span class="chip"><%= exclusion.name %></span>
                     <% end %>
                   </div>
                 <% else %>

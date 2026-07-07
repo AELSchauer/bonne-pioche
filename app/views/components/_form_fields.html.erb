@@ -42,11 +42,11 @@
     <div>
       <span class="block mb-1.5 text-[13px] font-semibold text-text">Restrictions</span>
       <div class="flex flex-wrap gap-2">
-        <% @restriction_options.each do |key| %>
+        <% @restriction_options.each do |restriction_name| %>
           <label class="chip-toggle">
-            <input type="checkbox" name="component[restrictions][]" value="<%= key %>"
-                   <%= "checked" if @component.restrictions.any? { |r| r.name == key } %>>
-            <span><%= ComponentsController::RESTRICTION_LABELS.fetch(key, key.humanize) %></span>
+            <input type="checkbox" name="component[restrictions][]" value="<%= restriction_name.id %>"
+                   <%= "checked" if @component.restrictions.any? { |r| r.restriction_name_id == restriction_name.id } %>>
+            <span><%= restriction_name.name %></span>
           </label>
         <% end %>
       </div>

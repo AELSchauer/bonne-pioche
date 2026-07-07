@@ -3,15 +3,10 @@ class ComponentsController < ApplicationController
 
   UNITS = %w[ea pack set g L].freeze
   STATUSES = { "draft" => "Draft", "active" => "Active", "inactive" => "Inactive", "archived" => "Archived" }.freeze
-  RESTRICTION_LABELS = {
-    "caffeine_free" => "Caffeine-free",
-    "gluten_free" => "Gluten-free",
-    "nut_free" => "Nut-free"
-  }.freeze
   SKU_PREFIXES = { "GFT" => "Gift", "PKG" => "Packaging" }.freeze
 
   def index
-    @components = Component.includes(:restrictions).order(:name).to_a
+    @components = Component.includes(restrictions: :restriction_name).order(:name).to_a
   end
 
   def show
@@ -63,12 +58,12 @@ class ComponentsController < ApplicationController
 
     @component.name = "#{source.name} (copy)"
     @component.status = source.status
-    source.restrictions.each { |restriction| @component.restrictions.build(name: restriction.name) }
+    source.restrictions.each { |restriction| @component.restrictions.build(restriction_name: restriction.restriction_name) }
     @selected_sku_prefix = source.sku_prefix
   end
 
   def load_form_collections
-    @restriction_options = Restriction.names.keys
+    @restriction_options = RestrictionName.order(:name)
   end
 
   def component_params

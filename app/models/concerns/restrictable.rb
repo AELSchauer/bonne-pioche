@@ -8,6 +8,6 @@ module Restrictable
 
   # Instance methods can go here
   def restriction_names
-    restrictions.pluck(:name).join(", ")
+    restrictions.includes(:restriction_name).map(&:name).join(", ")
   end
 end

@@ -2,16 +2,11 @@ class AssembliesController < ApplicationController
   include ManagesParts
 
   STATUSES = { "draft" => "Draft", "active" => "Active", "inactive" => "Inactive", "archived" => "Archived" }.freeze
-  RESTRICTION_LABELS = {
-    "caffeine_free" => "Caffeine-free",
-    "gluten_free" => "Gluten-free",
-    "nut_free" => "Nut-free"
-  }.freeze
   SKU_PREFIXES = { "GFT" => "Gift", "PKG" => "Packaging" }.freeze
   TYPES = { "GiftAssembly" => "Gift assembly / Kit", "Assembly" => "Assembly / Sub-Assembly" }.freeze
 
   def index
-    @assemblies = Assembly.includes(:restrictions).order(:name).to_a
+    @assemblies = Assembly.includes(restrictions: :restriction_name).order(:name).to_a
   end
 
   def new
@@ -91,7 +86,7 @@ class AssembliesController < ApplicationController
 
     @assembly.name = "#{source.name} (copy)"
     @assembly.status = source.status
-    source.restrictions.each { |restriction| @assembly.restrictions.build(name: restriction.name) }
+    source.restrictions.each { |restriction| @assembly.restrictions.build(restriction_name: restriction.restriction_name) }
     source.assembly_line_items.each do |line_item|
       new_line_item = @assembly.assembly_line_items.build(quantity: line_item.quantity)
       line_item.line_item_options.each do |option|
@@ -104,7 +99,7 @@ class AssembliesController < ApplicationController
   end
 
   def load_form_collections
-    @restriction_options = Restriction.names.keys
+    @restriction_options = RestrictionName.order(:name)
     @decks = Deck.includes(:cards).order(:name)
     @option_groups = {
       "Components" => Component.order(:name).map { |c| [ c.name, "Component-#{c.id}" ] },

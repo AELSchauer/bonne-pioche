@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_07_07_044744) do
+ActiveRecord::Schema[8.1].define(version: 2026_07_07_050329) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -135,12 +135,20 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_07_044744) do
     t.index ["order_number"], name: "index_orders_on_order_number", unique: true
   end
 
+  create_table "restriction_names", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "name", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_restriction_names_on_name", unique: true
+  end
+
   create_table "restrictions", force: :cascade do |t|
     t.datetime "created_at", null: false
-    t.string "name"
     t.bigint "restrictable_id"
     t.string "restrictable_type"
+    t.bigint "restriction_name_id", null: false
     t.datetime "updated_at", null: false
+    t.index ["restriction_name_id"], name: "index_restrictions_on_restriction_name_id"
   end
 
   create_table "supplier_sku_components", force: :cascade do |t|
@@ -179,6 +187,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_07_044744) do
   add_foreign_key "card_assemblies", "cards"
   add_foreign_key "card_assemblies", "decks"
   add_foreign_key "cards", "decks"
+  add_foreign_key "restrictions", "restriction_names"
   add_foreign_key "supplier_sku_components", "components"
   add_foreign_key "supplier_sku_components", "supplier_skus"
   add_foreign_key "supplier_skus", "suppliers"

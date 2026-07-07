@@ -49,7 +49,7 @@
         <% if @component.restrictions.any? %>
           <div class="flex flex-wrap gap-1.5">
             <% @component.restrictions.each do |restriction| %>
-              <span class="chip"><%= restriction.name.humanize %></span>
+              <span class="chip"><%= restriction.name %></span>
             <% end %>
           </div>
         <% else %>

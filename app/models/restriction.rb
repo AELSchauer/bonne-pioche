@@ -1,14 +1,8 @@
 class Restriction < ApplicationRecord
   belongs_to :restrictable, polymorphic: true
+  belongs_to :restriction_name
 
-  enum :name, {
-    caffeine_free: "Caffeine-Free",
-    dairy_free: "Dairy Free",
-    gluten_free: "Gluten Free",
-    kosher: "Kosher",
-    nut_free: "Nut Free",
-    organic: "Organic"
-  }
+  delegate :name, to: :restriction_name, allow_nil: true
 
-  validates :name, presence: true, uniqueness: { scope: :restrictable }
+  validates :restriction_name_id, presence: true, uniqueness: { scope: :restrictable }
 end
