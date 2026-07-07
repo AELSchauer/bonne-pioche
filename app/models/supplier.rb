@@ -1,5 +1,5 @@
 class Supplier < ApplicationRecord
   has_many :supplier_skus, dependent: :destroy
 
-  validates :name, presence: true
+  validates :name, presence: true, uniqueness: true
 end

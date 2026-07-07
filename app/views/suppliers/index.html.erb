@@ -1,0 +1,58 @@
+<% content_for :title, "Suppliers · Bonne Pioche" %>
+
+<p class="mb-4.5 text-[13px] text-text-muted">
+  <span class="text-text font-semibold">Suppliers</span>
+</p>
+
+<% if notice %>
+  <div class="mb-5 px-4 py-2.75 rounded-sm text-[13.5px] border border-[#cfe0c8] bg-accent-soft text-accent-dark"><%= notice %></div>
+<% end %>
+
+<div class="flex items-start justify-between gap-5 mb-5.5">
+  <div>
+    <h1 class="m-0 text-[26px] font-bold tracking-tight">Suppliers</h1>
+    <p class="mt-1.5 mb-0 text-text-muted text-sm">Vendors and the SKUs they sell.</p>
+  </div>
+  <div class="flex items-center gap-2.5 flex-wrap justify-end">
+    <%= link_to "+ Add supplier", new_supplier_path, class: "btn btn-primary" %>
+  </div>
+</div>
+
+<div class="card card-flush">
+  <% if @suppliers.any? %>
+    <div class="overflow-x-auto">
+      <table class="w-full min-w-[480px] border-collapse">
+        <thead>
+          <tr>
+            <th class="text-left px-5 py-3 text-xs font-bold uppercase tracking-wide text-text-faint bg-surface-alt border-b border-border">Name</th>
+            <th class="text-left px-5 py-3 text-xs font-bold uppercase tracking-wide text-text-faint bg-surface-alt border-b border-border">SKUs</th>
+            <th class="text-left px-5 py-3 text-xs font-bold uppercase tracking-wide text-text-faint bg-surface-alt border-b border-border"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @suppliers.each do |supplier| %>
+            <tr class="hover:bg-surface-alt">
+              <td class="px-5 py-3.5 text-[13.5px] border-b border-border align-middle font-semibold text-text"><%= supplier.name %></td>
+              <td class="px-5 py-3.5 text-[13.5px] border-b border-border align-middle"><%= supplier.supplier_skus.size %></td>
+              <td class="px-5 py-3.5 text-[13.5px] border-b border-border align-middle">
+                <div class="flex gap-2 justify-end">
+                  <%= link_to "View", supplier_path(supplier), class: "btn btn-tertiary btn-sm" %>
+                  <%= link_to "Edit", edit_supplier_path(supplier), class: "btn btn-secondary btn-sm" %>
+                  <%= button_to "Delete", supplier_path(supplier), method: :delete,
+                        data: { turbo_confirm: "Delete #{supplier.name}? All #{supplier.supplier_skus.size} SKU(s) will be deleted too." },
+                        class: "btn btn-tertiary btn-sm" %>
+                </div>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% else %>
+    <div class="flex flex-col items-center gap-2 text-center py-14 px-6">
+      <p class="m-0 text-base font-bold">No suppliers yet</p>
+      <p class="mb-2 text-text-muted text-[13.5px]">Add the vendors you buy components and kits from.</p>
+      <%= link_to "+ Add supplier", new_supplier_path, class: "btn btn-primary" %>
+    </div>
+  <% end %>
+</div>

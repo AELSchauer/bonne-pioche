@@ -1,0 +1,70 @@
+<% content_for :title, "#{@supplier.name} · Suppliers · Bonne Pioche" %>
+
+<p class="mb-4.5 flex items-center gap-2 text-[13px] text-text-muted">
+  <%= link_to "Suppliers", suppliers_path %>
+  <span class="text-text-faint">&rsaquo;</span>
+  <span class="text-text font-semibold"><%= @supplier.name %></span>
+</p>
+
+<% if notice %>
+  <div class="mb-5 px-4 py-2.75 rounded-sm text-[13.5px] border border-[#cfe0c8] bg-accent-soft text-accent-dark"><%= notice %></div>
+<% end %>
+
+<div class="flex items-start justify-between gap-5 mb-5.5">
+  <div>
+    <h1 class="m-0 text-[26px] font-bold tracking-tight"><%= @supplier.name %></h1>
+    <p class="mt-1.5 mb-0 text-text-muted text-sm">SKUs (<%= @supplier_skus.size %>)</p>
+  </div>
+  <div class="flex items-center gap-2.5 flex-wrap justify-end">
+    <%= link_to "Edit supplier", edit_supplier_path(@supplier), class: "btn btn-secondary" %>
+    <%= link_to "+ Add SKU", new_supplier_supplier_sku_path(@supplier), class: "btn btn-primary" %>
+  </div>
+</div>
+
+<div class="card card-flush">
+  <% if @supplier_skus.any? %>
+    <div class="overflow-x-auto">
+      <table class="w-full min-w-[480px] border-collapse">
+        <thead>
+          <tr>
+            <th class="text-left px-5 py-3 text-xs font-bold uppercase tracking-wide text-text-faint bg-surface-alt border-b border-border">Name</th>
+            <th class="text-left px-5 py-3 text-xs font-bold uppercase tracking-wide text-text-faint bg-surface-alt border-b border-border">SKU code</th>
+            <th class="text-left px-5 py-3 text-xs font-bold uppercase tracking-wide text-text-faint bg-surface-alt border-b border-border">Components</th>
+            <th class="text-left px-5 py-3 text-xs font-bold uppercase tracking-wide text-text-faint bg-surface-alt border-b border-border">Cost/unit</th>
+            <th class="text-left px-5 py-3 text-xs font-bold uppercase tracking-wide text-text-faint bg-surface-alt border-b border-border"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @supplier_skus.each do |supplier_sku| %>
+            <tr class="hover:bg-surface-alt">
+              <td class="px-5 py-3.5 text-[13.5px] border-b border-border align-middle font-semibold text-text"><%= supplier_sku.name %></td>
+              <td class="px-5 py-3.5 text-[13.5px] border-b border-border align-middle"><%= supplier_sku.sku.presence || "—" %></td>
+              <td class="px-5 py-3.5 text-[13.5px] border-b border-border align-middle"><%= supplier_sku.supplier_sku_components.size %></td>
+              <td class="px-5 py-3.5 text-[13.5px] border-b border-border align-middle">
+                <% if supplier_sku.wholesale_per_unit_cost_cents %>
+                  <%= number_to_currency(supplier_sku.wholesale_per_unit_cost_cents / 100.0) %>
+                <% else %>
+                  <span class="text-text-faint">—</span>
+                <% end %>
+              </td>
+              <td class="px-5 py-3.5 text-[13.5px] border-b border-border align-middle">
+                <div class="flex gap-2 justify-end">
+                  <%= link_to "View", supplier_supplier_sku_path(@supplier, supplier_sku), class: "btn btn-tertiary btn-sm" %>
+                  <%= link_to "Edit", edit_supplier_supplier_sku_path(@supplier, supplier_sku), class: "btn btn-secondary btn-sm" %>
+                  <%= button_to "Delete", supplier_supplier_sku_path(@supplier, supplier_sku), method: :delete,
+                        data: { turbo_confirm: "Delete #{supplier_sku.name}?" }, class: "btn btn-tertiary btn-sm" %>
+                </div>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% else %>
+    <div class="flex flex-col items-center gap-2 text-center py-14 px-6">
+      <p class="m-0 text-base font-bold">No SKUs yet</p>
+      <p class="mb-2 text-text-muted text-[13.5px]">Add a SKU and build its component BOM.</p>
+      <%= link_to "+ Add SKU", new_supplier_supplier_sku_path(@supplier), class: "btn btn-primary" %>
+    </div>
+  <% end %>
+</div>

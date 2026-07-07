@@ -1,0 +1,14 @@
+<tr data-nested-fields-target="item" class="hover:bg-surface-alt">
+  <td class="px-3 py-2 text-[13.5px] border-b border-border align-middle">
+    <%= sc.select :component_id,
+          options_from_collection_for_select(@components, :id, :name, sc.object.component_id),
+          { include_blank: "Select component" }, class: "field-input", required: true %>
+  </td>
+  <td class="px-3 py-2 text-[13.5px] border-b border-border align-middle w-24">
+    <%= sc.number_field :quantity, value: sc.object.quantity || 1, min: 1, class: "field-input", required: true %>
+  </td>
+  <td class="px-3 py-2 text-[13.5px] border-b border-border align-middle text-center w-20">
+    <%= sc.hidden_field :_destroy %>
+    <button type="button" class="btn btn-tertiary btn-sm" data-action="click->nested-fields#remove">Remove</button>
+  </td>
+</tr>

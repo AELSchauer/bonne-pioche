@@ -11,6 +11,9 @@ Rails.application.routes.draw do
 
   resources :components, only: %i[index show new create edit update]
   resources :assemblies, only: %i[index new create edit update]
+  resources :suppliers do
+    resources :supplier_skus, path: "skus", only: %i[show new create edit update destroy]
+  end
   resources :decks, only: %i[index show new create edit update destroy] do
     resources :cards, only: %i[new create show destroy] do
       get :available_assemblies, on: :member

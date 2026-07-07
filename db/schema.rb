@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_07_06_231327) do
+ActiveRecord::Schema[8.1].define(version: 2026_07_07_042120) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -146,14 +146,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_06_231327) do
   create_table "supplier_sku_components", force: :cascade do |t|
     t.bigint "component_id", null: false
     t.datetime "created_at", null: false
-    t.integer "msrp_cents"
-    t.string "msrp_url"
+    t.integer "quantity"
     t.bigint "supplier_sku_id", null: false
     t.datetime "updated_at", null: false
-    t.integer "wholesale_cost_cents"
-    t.virtual "wholesale_per_unit_cost_cents", type: :integer, as: "ceiling(((wholesale_cost_cents / wholesale_quantity))::double precision)", stored: true
-    t.integer "wholesale_quantity"
-    t.string "wholesale_url"
     t.index ["component_id"], name: "index_supplier_sku_components_on_component_id"
     t.index ["supplier_sku_id", "component_id"], name: "idx_on_supplier_sku_id_component_id_08bf377de2", unique: true
     t.index ["supplier_sku_id"], name: "index_supplier_sku_components_on_supplier_sku_id"
@@ -165,6 +160,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_06_231327) do
     t.string "sku"
     t.bigint "supplier_id", null: false
     t.datetime "updated_at", null: false
+    t.integer "wholesale_cost_cents"
+    t.virtual "wholesale_per_unit_cost_cents", type: :integer, as: "ceiling(((wholesale_cost_cents / wholesale_quantity))::double precision)", stored: true
+    t.integer "wholesale_quantity"
+    t.string "wholesale_url"
     t.index ["supplier_id"], name: "index_supplier_skus_on_supplier_id"
   end
 

@@ -1,0 +1,81 @@
+<% content_for :title, "#{@supplier_sku.name} · #{@supplier.name} · Bonne Pioche" %>
+
+<p class="mb-4.5 flex items-center gap-2 text-[13px] text-text-muted">
+  <%= link_to "Suppliers", suppliers_path %>
+  <span class="text-text-faint">&rsaquo;</span>
+  <%= link_to @supplier.name, supplier_path(@supplier) %>
+  <span class="text-text-faint">&rsaquo;</span>
+  <span class="text-text font-semibold"><%= @supplier_sku.name %></span>
+</p>
+
+<% if notice %>
+  <div class="mb-5 px-4 py-2.75 rounded-sm text-[13.5px] border border-[#cfe0c8] bg-accent-soft text-accent-dark"><%= notice %></div>
+<% end %>
+
+<div class="flex items-start justify-between gap-5 mb-5.5">
+  <div>
+    <h1 class="m-0 text-[26px] font-bold tracking-tight"><%= @supplier_sku.name %></h1>
+    <p class="mt-1.5 mb-0 text-text-muted text-sm"><%= @supplier_sku.sku.presence || "No SKU code" %></p>
+  </div>
+  <div class="flex items-center gap-2.5 flex-wrap justify-end">
+    <%= link_to "Back", supplier_path(@supplier), class: "btn btn-tertiary" %>
+    <%= link_to "Edit", edit_supplier_supplier_sku_path(@supplier, @supplier_sku), class: "btn btn-primary" %>
+  </div>
+</div>
+
+<div class="card">
+  <section class="mb-7.5 last:mb-0">
+    <h2 class="m-0 mb-4 text-[15px] font-bold">Wholesale pricing</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-[22px] gap-y-5">
+      <div>
+        <span class="block mb-1 text-xs font-bold uppercase tracking-wide text-text-faint">Wholesale cost</span>
+        <span class="text-sm text-text"><%= @supplier_sku.wholesale_cost ? number_to_currency(@supplier_sku.wholesale_cost) : "—" %></span>
+      </div>
+
+      <div>
+        <span class="block mb-1 text-xs font-bold uppercase tracking-wide text-text-faint">Quantity per purchase</span>
+        <span class="text-sm text-text"><%= @supplier_sku.wholesale_quantity || "—" %></span>
+      </div>
+
+      <div>
+        <span class="block mb-1 text-xs font-bold uppercase tracking-wide text-text-faint">Cost per unit</span>
+        <span class="text-sm text-text"><%= @supplier_sku.wholesale_per_unit_cost_cents ? number_to_currency(@supplier_sku.wholesale_per_unit_cost_cents / 100.0) : "—" %></span>
+      </div>
+
+      <div>
+        <span class="block mb-1 text-xs font-bold uppercase tracking-wide text-text-faint">Wholesale URL</span>
+        <% if @supplier_sku.wholesale_url.present? %>
+          <%= link_to @supplier_sku.wholesale_url, @supplier_sku.wholesale_url, target: "_blank", rel: "noopener", class: "text-sm text-accent-dark hover:underline break-all" %>
+        <% else %>
+          <span class="text-sm text-text-faint">—</span>
+        <% end %>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="m-0 mb-4 text-[15px] font-bold">Components</h2>
+    <% if @supplier_sku.supplier_sku_components.any? %>
+      <div class="overflow-x-auto">
+        <table class="w-full min-w-[360px] border-collapse">
+          <thead>
+            <tr>
+              <th class="text-left px-3 py-2 text-xs font-bold uppercase tracking-wide text-text-faint bg-surface-alt border-b border-border">Component</th>
+              <th class="text-left px-3 py-2 text-xs font-bold uppercase tracking-wide text-text-faint bg-surface-alt border-b border-border w-24">Qty</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @supplier_sku.supplier_sku_components.each do |supplier_sku_component| %>
+              <tr>
+                <td class="px-3 py-2 text-[13.5px] border-b border-border last:border-b-0 align-middle"><%= supplier_sku_component.component.name %></td>
+                <td class="px-3 py-2 text-[13.5px] border-b border-border last:border-b-0 align-middle"><%= supplier_sku_component.quantity %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    <% else %>
+      <p class="text-[13px] text-text-faint">No components added yet.</p>
+    <% end %>
+  </section>
+</div>

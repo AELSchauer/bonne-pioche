@@ -15,7 +15,8 @@
           class: "px-3 py-2 rounded-sm text-[13.5px] #{request.path.start_with?(components_path) ? "bg-surface-alt text-text font-semibold" : "text-text-muted hover:bg-surface-alt"}" %>
     <%= link_to "Decks & Cards", decks_path,
           class: "px-3 py-2 rounded-sm text-[13.5px] #{request.path.start_with?(decks_path) ? "bg-surface-alt text-text font-semibold" : "text-text-muted hover:bg-surface-alt"}" %>
-    <span class="px-3 py-2 rounded-sm text-[13.5px] text-text-muted">Suppliers</span>
+    <%= link_to "Suppliers", suppliers_path,
+          class: "px-3 py-2 rounded-sm text-[13.5px] #{request.path.start_with?(suppliers_path) ? "bg-surface-alt text-text font-semibold" : "text-text-muted hover:bg-surface-alt"}" %>
     <span class="px-3 py-2 rounded-sm text-[13.5px] text-text-muted">Reports</span>
   </nav>
 
