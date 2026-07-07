@@ -1,0 +1,69 @@
+<% content_for :title, "Decks · Bonne Pioche" %>
+
+<p class="mb-4.5 text-[13px] text-text-muted">
+  <span class="text-text font-semibold">Decks &amp; Cards</span>
+</p>
+
+<% if notice %>
+  <div class="mb-5 px-4 py-2.75 rounded-sm text-[13.5px] border border-[#cfe0c8] bg-accent-soft text-accent-dark"><%= notice %></div>
+<% end %>
+
+<div class="flex items-start justify-between gap-5 mb-5.5">
+  <div>
+    <h1 class="m-0 text-[26px] font-bold tracking-tight">Decks &amp; Cards</h1>
+    <p class="mt-1.5 mb-0 text-text-muted text-sm">Collectible decks and the cards gift assemblies are tied to.</p>
+  </div>
+  <div class="flex items-center gap-2.5 flex-wrap justify-end">
+    <%= link_to "+ Add deck", new_deck_path, class: "btn btn-primary" %>
+  </div>
+</div>
+
+<div class="flex items-center gap-1 mb-5.5 border-b border-border">
+  <span class="px-3 py-2 text-[13.5px] font-semibold text-text border-b-2 border-accent -mb-px">Decks</span>
+  <span class="px-3 py-2 text-[13.5px] text-text-faint">Gift Assemblies</span>
+</div>
+
+<div class="card card-flush">
+  <% if @decks.any? %>
+    <div class="overflow-x-auto">
+      <table class="w-full min-w-[480px] border-collapse">
+        <thead>
+          <tr>
+            <th class="text-left px-5 py-3 text-xs font-bold uppercase tracking-wide text-text-faint bg-surface-alt border-b border-border">Name</th>
+            <th class="text-left px-5 py-3 text-xs font-bold uppercase tracking-wide text-text-faint bg-surface-alt border-b border-border">Tier</th>
+            <th class="text-left px-5 py-3 text-xs font-bold uppercase tracking-wide text-text-faint bg-surface-alt border-b border-border">Status</th>
+            <th class="text-left px-5 py-3 text-xs font-bold uppercase tracking-wide text-text-faint bg-surface-alt border-b border-border">Cards</th>
+            <th class="text-left px-5 py-3 text-xs font-bold uppercase tracking-wide text-text-faint bg-surface-alt border-b border-border"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @decks.each do |deck| %>
+            <tr class="hover:bg-surface-alt">
+              <td class="px-5 py-3.5 text-[13.5px] border-b border-border align-middle font-semibold text-text"><%= deck.name %></td>
+              <td class="px-5 py-3.5 text-[13.5px] border-b border-border align-middle"><%= deck.tier&.humanize || "—" %></td>
+              <td class="px-5 py-3.5 text-[13.5px] border-b border-border align-middle">
+                <span class="status-badge <%= "status-badge-active" if deck.status == "active" %>"><%= deck.status.humanize %></span>
+              </td>
+              <td class="px-5 py-3.5 text-[13.5px] border-b border-border align-middle"><%= deck.cards.size %></td>
+              <td class="px-5 py-3.5 text-[13.5px] border-b border-border align-middle">
+                <div class="flex gap-2 justify-end">
+                  <%= link_to "View", deck_path(deck), class: "btn btn-tertiary btn-sm" %>
+                  <%= link_to "Edit", edit_deck_path(deck), class: "btn btn-secondary btn-sm" %>
+                  <%= button_to "Delete", deck_path(deck), method: :delete,
+                        data: { turbo_confirm: "Delete #{deck.name}? All #{deck.cards.size} card(s) in this deck will be deleted too." },
+                        class: "btn btn-tertiary btn-sm" %>
+                </div>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% else %>
+    <div class="flex flex-col items-center gap-2 text-center py-14 px-6">
+      <p class="m-0 text-base font-bold">No decks yet</p>
+      <p class="mb-2 text-text-muted text-[13.5px]">Decks group the cards that gift assemblies are tied to.</p>
+      <%= link_to "+ Add deck", new_deck_path, class: "btn btn-primary" %>
+    </div>
+  <% end %>
+</div>

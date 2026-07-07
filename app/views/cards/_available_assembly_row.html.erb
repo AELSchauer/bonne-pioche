@@ -1,0 +1,6 @@
+<div class="flex items-center justify-between gap-3 px-5 py-3 border-b border-border last:border-b-0" id="available_assembly_<%= gift_assembly.id %>">
+  <span class="text-[13.5px] font-medium text-text"><%= gift_assembly.name %></span>
+  <%= button_to "Add", deck_card_assemblies_path(@deck), method: :post,
+        params: { card_id: @card.id, gift_assembly_id: gift_assembly.id },
+        class: "btn btn-secondary btn-sm" %>
+</div>

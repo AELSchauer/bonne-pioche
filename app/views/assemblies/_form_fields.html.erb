@@ -1,6 +1,6 @@
 <section class="mb-7.5 last:mb-0">
   <h2 class="m-0 mb-4 text-[15px] font-bold">Basics</h2>
-  <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-[22px] gap-y-5">
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-[22px] gap-y-5" data-controller="field-toggle" data-field-toggle-show-when-value="GiftAssembly">
     <div>
       <span class="block mb-1.5 text-[13px] font-semibold text-text">Type</span>
       <% if @assembly.persisted? %>
@@ -10,7 +10,8 @@
       <% else %>
         <% default_type = @selected_type.presence || AssembliesController::TYPES.keys.first %>
         <%= select_tag "assembly[type]", options_for_select(AssembliesController::TYPES.to_a.map { |value, label| [ label, value ] }, default_type),
-              id: "assembly_type", class: "field-input" %>
+              id: "assembly_type", class: "field-input",
+              data: { field_toggle_target: "source", action: "change->field-toggle#toggle" } %>
         <p class="mt-1.5 text-xs text-text-faint">Gift assemblies are sellable boxes; assemblies can be nested as sub-assemblies.</p>
       <% end %>
     </div>
@@ -41,26 +42,33 @@
       <% end %>
     </div>
 
-    <% selected_category = @assembly.subcategory&.category %>
-    <% subcategory_options = (selected_category&.subcategories || []).map { |s| [ s.name, s.id ] } %>
-    <% subcategories_by_category = @categories.each_with_object({}) { |category, hash| hash[category.id] = category.subcategories.order(:name).map { |s| { value: s.id, label: s.name } } } %>
+    <% is_gift_assembly = @assembly.persisted? ? @assembly.is_a?(GiftAssembly) : true %>
+    <% selected_card_id = @selected_card_id.presence || (@assembly.is_a?(GiftAssembly) ? @assembly.card_id : nil) %>
+    <% selected_card = Card.find_by(id: selected_card_id) %>
+    <% selected_deck = selected_card&.deck %>
+    <% card_options = (selected_deck&.cards || []).map { |c| [ c.name, c.id ] } %>
+    <% cards_by_deck = @decks.each_with_object({}) { |deck, hash| hash[deck.id] = deck.cards.order(:name).map { |c| { value: c.id, label: c.name } } } %>
 
-    <div data-controller="nested-select" data-nested-select-options-value="<%= subcategories_by_category.to_json %>">
-      <label class="block mb-1.5 text-[13px] font-semibold text-text" for="assembly_category_id">Category</label>
-      <select class="field-input" id="assembly_category_id" data-nested-select-target="parent"
-              data-action="change->nested-select#updateChild" required>
-        <option value="">Select category</option>
-        <% @categories.each do |category| %>
-          <option value="<%= category.id %>" <%= "selected" if category == selected_category %>><%= category.name %></option>
-        <% end %>
-      </select>
-    </div>
+    <div class="contents <%= "hidden" unless is_gift_assembly %>" data-field-toggle-target="field"
+         data-controller="nested-select" data-nested-select-options-value="<%= cards_by_deck.to_json %>"
+         data-nested-select-child-placeholder-value="Select card">
+      <div>
+        <label class="block mb-1.5 text-[13px] font-semibold text-text" for="assembly_deck_id">Deck</label>
+        <select class="field-input" id="assembly_deck_id" data-nested-select-target="parent"
+                data-action="change->nested-select#updateChild">
+          <option value="">Select deck</option>
+          <% @decks.each do |deck| %>
+            <option value="<%= deck.id %>" <%= "selected" if deck == selected_deck %>><%= deck.name %></option>
+          <% end %>
+        </select>
+      </div>
 
-    <div>
-      <%= f.label :subcategory_id, "Subcategory", class: "block mb-1.5 text-[13px] font-semibold text-text" %>
-      <%= f.select :subcategory_id, options_for_select(subcategory_options, @assembly.subcategory_id),
-            { include_blank: "Select subcategory" },
-            id: "assembly_subcategory_id", class: "field-input", data: { nested_select_target: "child" }, required: true %>
+      <div>
+        <label class="block mb-1.5 text-[13px] font-semibold text-text" for="assembly_card_id">Card</label>
+        <%= select_tag "assembly[card_id]",
+              options_for_select([ [ "Select card", "" ] ] + card_options, selected_card_id),
+              id: "assembly_card_id", class: "field-input", data: { nested_select_target: "child" } %>
+      </div>
     </div>
 
     <div>

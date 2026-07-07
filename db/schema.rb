@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_07_06_060958) do
+ActiveRecord::Schema[8.1].define(version: 2026_07_06_231327) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -49,12 +49,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_06_060958) do
     t.integer "sku_number", default: -> { "nextval('assemblies_sequential_number_seq'::regclass)" }, null: false
     t.string "sku_prefix", null: false
     t.string "status"
-    t.bigint "subcategory_id"
     t.string "tier"
     t.string "type"
     t.datetime "updated_at", null: false
     t.index ["sku_number"], name: "index_assemblies_on_sku_number", unique: true
-    t.index ["subcategory_id"], name: "index_assemblies_on_subcategory_id"
   end
 
   create_table "assembly_line_items", force: :cascade do |t|
@@ -75,10 +73,26 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_06_060958) do
     t.index ["order_id"], name: "index_boxes_on_order_id"
   end
 
-  create_table "categories", force: :cascade do |t|
+  create_table "card_assemblies", force: :cascade do |t|
+    t.bigint "card_id", null: false
     t.datetime "created_at", null: false
-    t.string "name"
+    t.bigint "deck_id", null: false
+    t.bigint "gift_assembly_id", null: false
+    t.integer "position"
     t.datetime "updated_at", null: false
+    t.index ["card_id"], name: "index_card_assemblies_on_card_id"
+    t.index ["deck_id", "gift_assembly_id"], name: "index_card_assemblies_on_deck_and_gift_assembly", unique: true
+    t.index ["deck_id"], name: "index_card_assemblies_on_deck_id"
+    t.index ["gift_assembly_id"], name: "index_card_assemblies_on_gift_assembly_id"
+  end
+
+  create_table "cards", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "deck_id", null: false
+    t.string "name"
+    t.string "status"
+    t.datetime "updated_at", null: false
+    t.index ["deck_id"], name: "index_cards_on_deck_id"
   end
 
   create_table "components", force: :cascade do |t|
@@ -88,13 +102,18 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_06_060958) do
     t.integer "sku_number", default: -> { "nextval('components_sequential_number_seq'::regclass)" }, null: false
     t.string "sku_prefix", null: false
     t.string "status"
-    t.bigint "subcategory_id"
-    t.string "tier"
     t.string "type"
     t.integer "unit_of_measure"
     t.datetime "updated_at", null: false
     t.index ["sku_number"], name: "index_components_on_sku_number", unique: true
-    t.index ["subcategory_id"], name: "index_components_on_subcategory_id"
+  end
+
+  create_table "decks", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "name"
+    t.string "status"
+    t.string "tier"
+    t.datetime "updated_at", null: false
   end
 
   create_table "line_item_options", force: :cascade do |t|
@@ -122,14 +141,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_06_060958) do
     t.bigint "restrictable_id"
     t.string "restrictable_type"
     t.datetime "updated_at", null: false
-  end
-
-  create_table "subcategories", force: :cascade do |t|
-    t.bigint "category_id", null: false
-    t.datetime "created_at", null: false
-    t.string "name"
-    t.datetime "updated_at", null: false
-    t.index ["category_id"], name: "index_subcategories_on_category_id"
   end
 
   create_table "supplier_sku_components", force: :cascade do |t|
@@ -165,6 +176,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_06_060958) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "card_assemblies", "assemblies", column: "gift_assembly_id"
+  add_foreign_key "card_assemblies", "cards"
+  add_foreign_key "card_assemblies", "decks"
+  add_foreign_key "cards", "decks"
   add_foreign_key "supplier_sku_components", "components"
   add_foreign_key "supplier_sku_components", "supplier_skus"
   add_foreign_key "supplier_skus", "suppliers"

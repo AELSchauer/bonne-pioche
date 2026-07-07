@@ -1,0 +1,7 @@
+<%= turbo_stream.append "rail_card_list_#{@deck.id}" do %>
+  <%= render "decks/rail_card", card: @card, current_card: @card %>
+<% end %>
+
+<%= turbo_stream.update "workspace_pane" do %>
+  <%= render "pane_content" %>
+<% end %>

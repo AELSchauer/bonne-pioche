@@ -11,6 +11,14 @@ Rails.application.routes.draw do
 
   resources :components, only: %i[index show new create edit update]
   resources :assemblies, only: %i[index new create edit update]
+  resources :decks, only: %i[index show new create edit update destroy] do
+    resources :cards, only: %i[new create show destroy] do
+      get :available_assemblies, on: :member
+    end
+    resources :card_assemblies, only: %i[create destroy] do
+      patch :move, on: :member
+    end
+  end
 
   # Defines the root path route ("/")
   root "components#index"

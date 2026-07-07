@@ -2,7 +2,7 @@ import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
   static targets = ["parent", "child"]
-  static values = { options: Object }
+  static values = { options: Object, childPlaceholder: { type: String, default: "Select an option" } }
 
   updateChild() {
     const options = this.optionsValue[this.parentTarget.value] || []
@@ -12,7 +12,7 @@ export default class extends Controller {
   placeholderOption() {
     const option = document.createElement("option")
     option.value = ""
-    option.textContent = "Select subcategory"
+    option.textContent = this.childPlaceholderValue
     return option
   }
 

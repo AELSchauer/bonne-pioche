@@ -1,0 +1,19 @@
+<div class="w-64 flex-none bg-surface border border-border rounded-lg p-3">
+  <div class="px-2 py-1.5 mb-1 flex items-center justify-between gap-2">
+    <span class="font-bold text-sm text-text truncate"><%= deck.name %></span>
+    <div class="flex items-center gap-2 flex-none">
+      <%= link_to "Edit", edit_deck_path(deck), class: "text-xs text-text-faint hover:text-text-muted" %>
+      <%= button_to "Delete", deck_path(deck), method: :delete,
+            data: { turbo_confirm: "Delete #{deck.name}? All #{deck.cards.size} card(s) in this deck will be deleted too.", turbo_frame: "_top" },
+            form: { class: "inline" },
+            class: "text-xs text-text-faint hover:text-red-600 bg-transparent border-0 p-0 cursor-pointer" %>
+    </div>
+  </div>
+
+  <div class="flex flex-col gap-0.5" id="rail_card_list_<%= deck.id %>">
+    <%= render partial: "decks/rail_card", collection: deck.cards.order(:name), as: :card, locals: { current_card: current_card } %>
+  </div>
+
+  <%= link_to "+ Add card", new_deck_card_path(deck), data: { turbo_frame: "workspace_pane" },
+        class: "block px-2 py-1.5 mt-1 text-[13.5px] font-semibold text-accent-dark hover:underline" %>
+</div>

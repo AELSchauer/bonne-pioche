@@ -1,0 +1,25 @@
+<div class="fixed inset-0 bg-black/30 z-40 hidden" data-sidebar-target="backdrop" data-action="click->sidebar#close"></div>
+
+<aside class="fixed inset-y-0 left-0 z-50 w-64 bg-surface border-r border-border -translate-x-full transition-transform duration-200 flex flex-col"
+       data-sidebar-target="panel">
+  <div class="flex items-center gap-2.5 px-5 py-4 border-b border-border">
+    <span class="flex items-center justify-center w-8 h-8 rounded-lg bg-accent text-accent-contrast font-brand font-bold text-sm">BP</span>
+    <span class="font-brand text-lg font-bold text-text">Bonne Pioche</span>
+    <button type="button" class="ml-auto btn btn-tertiary btn-sm" data-action="click->sidebar#close" aria-label="Close menu">✕</button>
+  </div>
+
+  <nav class="flex flex-col gap-1 p-3">
+    <%= link_to "Assemblies", assemblies_path,
+          class: "px-3 py-2 rounded-sm text-[13.5px] #{request.path.start_with?(assemblies_path) ? "bg-surface-alt text-text font-semibold" : "text-text-muted hover:bg-surface-alt"}" %>
+    <%= link_to "Components", components_path,
+          class: "px-3 py-2 rounded-sm text-[13.5px] #{request.path.start_with?(components_path) ? "bg-surface-alt text-text font-semibold" : "text-text-muted hover:bg-surface-alt"}" %>
+    <%= link_to "Decks & Cards", decks_path,
+          class: "px-3 py-2 rounded-sm text-[13.5px] #{request.path.start_with?(decks_path) ? "bg-surface-alt text-text font-semibold" : "text-text-muted hover:bg-surface-alt"}" %>
+    <span class="px-3 py-2 rounded-sm text-[13.5px] text-text-muted">Suppliers</span>
+    <span class="px-3 py-2 rounded-sm text-[13.5px] text-text-muted">Reports</span>
+  </nav>
+
+  <div class="mt-auto flex items-center gap-2.5 p-4 border-t border-border">
+    <div class="w-8 h-8 rounded-full bg-surface-alt border border-border" aria-hidden="true"></div>
+  </div>
+</aside>

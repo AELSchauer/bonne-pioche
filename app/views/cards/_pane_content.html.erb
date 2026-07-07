@@ -1,0 +1,26 @@
+<div class="flex items-start justify-between gap-5 mb-5.5">
+  <div>
+    <div class="flex items-center gap-3 flex-wrap">
+      <h1 class="m-0 text-[26px] font-bold tracking-tight"><%= @card.name %></h1>
+      <span class="status-badge <%= "status-badge-active" if @card.status == "active" %>"><%= @card.status.humanize %></span>
+    </div>
+    <p class="mt-1.5 mb-0 text-text-muted text-sm" id="card_assemblies_count_label">Gift Assemblies (<%= @card_assemblies.size %>)</p>
+  </div>
+  <div class="flex items-center gap-2.5 flex-wrap justify-end">
+    <%= link_to "+ Add Gift Assembly", available_assemblies_deck_card_path(@deck, @card),
+          data: { turbo_frame: "workspace_pane" }, class: "btn btn-primary" %>
+    <%= button_to "Delete card", deck_card_path(@deck, @card), method: :delete,
+          data: { turbo_confirm: "Delete #{@card.name}? Its #{@card_assemblies.size} gift assembly association(s) will be removed, but the gift assemblies themselves will not be deleted.", turbo_frame: "_top" },
+          class: "btn btn-tertiary" %>
+  </div>
+</div>
+
+<div class="card card-flush">
+  <div id="card_assemblies_list">
+    <% @card_assemblies.each do |card_assembly| %>
+      <%= render "cards/gift_assembly_row", card_assembly: card_assembly %>
+    <% end %>
+  </div>
+
+  <%= render "cards/empty_state", deck: @deck, card: @card, card_assemblies_count: @card_assemblies.size %>
+</div>

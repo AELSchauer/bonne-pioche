@@ -11,7 +11,7 @@ class ComponentsController < ApplicationController
   SKU_PREFIXES = { "GFT" => "Gift", "PKG" => "Packaging" }.freeze
 
   def index
-    @components = Component.includes(:restrictions, subcategory: :category).order(:name).to_a
+    @components = Component.includes(:restrictions).order(:name).to_a
   end
 
   def show
@@ -62,7 +62,6 @@ class ComponentsController < ApplicationController
     return unless source
 
     @component.name = "#{source.name} (copy)"
-    @component.subcategory_id = source.subcategory_id
     @component.status = source.status
     source.restrictions.each { |restriction| @component.restrictions.build(name: restriction.name) }
     @selected_sku_prefix = source.sku_prefix
@@ -71,10 +70,9 @@ class ComponentsController < ApplicationController
   def load_form_collections
     @restriction_options = Restriction.names.keys
     @next_sku_numbers = SKU_PREFIXES.keys.index_with { |prefix| next_sku_number(Component, prefix) }
-    @categories = categories_with_subcategories
   end
 
   def component_params
-    params.require(:component).permit(:name, :subcategory_id, :status, :sku_prefix, :image)
+    params.require(:component).permit(:name, :status, :sku_prefix, :image)
   end
 end

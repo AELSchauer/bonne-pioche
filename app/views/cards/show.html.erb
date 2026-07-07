@@ -1,0 +1,23 @@
+<% content_for :title, "#{@card.name} · #{@deck.name} · Bonne Pioche" %>
+
+<p class="mb-4.5 flex items-center gap-2 text-[13px] text-text-muted">
+  <%= link_to "Decks & Cards", decks_path %>
+  <span class="text-text-faint">&rsaquo;</span>
+  <span class="text-text-muted"><%= @deck.name %></span>
+  <span class="text-text-faint">&rsaquo;</span>
+  <span class="text-text font-semibold"><%= @card.name %></span>
+</p>
+
+<% if notice %>
+  <div class="mb-5 px-4 py-2.75 rounded-sm text-[13.5px] border border-[#cfe0c8] bg-accent-soft text-accent-dark"><%= notice %></div>
+<% end %>
+
+<div class="flex items-start gap-5" data-controller="reassign" data-reassign-deck-id-value="<%= @deck.id %>">
+  <%= turbo_frame_tag "deck_rail" do %>
+    <%= render "decks/rail", deck: @deck, current_card: @card %>
+  <% end %>
+
+  <%= turbo_frame_tag "workspace_pane", class: "flex-1 min-w-0" do %>
+    <%= render "pane_content" %>
+  <% end %>
+</div>

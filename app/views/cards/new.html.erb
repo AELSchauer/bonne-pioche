@@ -1,0 +1,65 @@
+<% content_for :title, "Add card · Bonne Pioche" %>
+
+<p class="mb-4.5 flex items-center gap-2 text-[13px] text-text-muted">
+  <%= link_to "Decks & Cards", decks_path %>
+  <span class="text-text-faint">&rsaquo;</span>
+  <span class="text-text font-semibold"><%= @deck.name %></span>
+</p>
+
+<% if notice %>
+  <div class="mb-5 px-4 py-2.75 rounded-sm text-[13.5px] border border-[#cfe0c8] bg-accent-soft text-accent-dark"><%= notice %></div>
+<% end %>
+
+<div class="flex items-start gap-5" data-controller="reassign" data-reassign-deck-id-value="<%= @deck.id %>">
+  <%= turbo_frame_tag "deck_rail" do %>
+    <%= render "decks/rail", deck: @deck, current_card: nil %>
+  <% end %>
+
+  <%= turbo_frame_tag "workspace_pane", class: "flex-1 min-w-0" do %>
+    <div class="mb-5.5">
+      <h1 class="m-0 text-[26px] font-bold tracking-tight">Add card</h1>
+      <p class="mt-1.5 mb-0 text-text-muted text-sm">An item category inside this deck.</p>
+    </div>
+
+    <%= form_with model: @card, url: deck_cards_path(@deck), method: :post,
+          data: { controller: "form-guard", action: "input->form-guard#markDirty change->form-guard#markDirty" } do |f| %>
+
+      <% if @card.errors.any? %>
+        <div class="mb-5 px-4 py-2.75 rounded-sm text-[13.5px] border border-[#ecc8be] bg-danger-soft text-danger">
+          <%= @card.errors.full_messages.to_sentence %>
+        </div>
+      <% end %>
+
+      <div class="card">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-[22px] gap-y-5">
+          <div>
+            <%= f.label :name, "Card name", class: "block mb-1.5 text-[13px] font-semibold text-text" %>
+            <%= f.text_field :name, placeholder: "e.g. Purse", class: "field-input", required: true %>
+          </div>
+
+          <div>
+            <%= f.label :status, "Status", class: "block mb-1.5 text-[13px] font-semibold text-text" %>
+            <%= f.select :status, CardsController::STATUSES.map { |value, label| [ label, value ] }, {}, id: "card_status", class: "field-input" %>
+          </div>
+
+          <div class="sm:col-span-2">
+            <span class="block mb-1.5 text-[13px] font-semibold text-text">Image</span>
+            <div class="flex items-center justify-center min-h-24 border-[1.5px] border-dashed border-border-strong rounded-md bg-surface-alt cursor-pointer text-center p-3 data-[over=true]:border-accent data-[over=true]:bg-accent-soft"
+                 data-controller="dropzone" data-action="dragover->dropzone#over dragleave->dropzone#leave drop->dropzone#drop click->dropzone#browse">
+              <%= f.file_field :image, accept: "image/*", hidden: true,
+                    data: { dropzone_target: "input", action: "change->dropzone#change" } %>
+              <div class="flex flex-col items-center gap-2" data-dropzone-target="preview">
+                <span class="text-[13px] text-text-faint">drop image or browse</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-end gap-2.5 mt-5.5">
+        <%= link_to "Cancel", decks_path, class: "btn btn-tertiary" %>
+        <%= f.submit "Add card", class: "btn btn-primary" %>
+      </div>
+    <% end %>
+  <% end %>
+</div>

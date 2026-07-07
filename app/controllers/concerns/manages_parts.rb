@@ -3,10 +3,6 @@ module ManagesParts
 
   private
 
-  def categories_with_subcategories
-    Category.includes(:subcategories).order(:name)
-  end
-
   def sync_restrictions(record, param_key)
     names = Array(params.dig(param_key, :restrictions)).reject(&:blank?)
     record.restrictions.where.not(name: names).destroy_all

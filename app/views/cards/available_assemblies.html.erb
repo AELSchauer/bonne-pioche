@@ -1,0 +1,43 @@
+<% content_for :title, "Add gift assembly · #{@deck.name} · Bonne Pioche" %>
+
+<p class="mb-4.5 flex items-center gap-2 text-[13px] text-text-muted">
+  <%= link_to "Decks & Cards", decks_path %>
+  <span class="text-text-faint">&rsaquo;</span>
+  <span class="text-text-muted"><%= @deck.name %></span>
+  <span class="text-text-faint">&rsaquo;</span>
+  <span class="text-text font-semibold"><%= @card.name %></span>
+</p>
+
+<div class="flex items-start gap-5" data-controller="reassign" data-reassign-deck-id-value="<%= @deck.id %>">
+  <%= turbo_frame_tag "deck_rail" do %>
+    <%= render "decks/rail", deck: @deck, current_card: @card %>
+  <% end %>
+
+  <%= turbo_frame_tag "workspace_pane", class: "flex-1 min-w-0" do %>
+    <div class="flex items-start justify-between gap-5 mb-5.5">
+      <div>
+        <h1 class="m-0 text-[26px] font-bold tracking-tight">Add to <%= @card.name %></h1>
+        <p class="mt-1.5 mb-0 text-text-muted text-sm">Gift assemblies not yet placed anywhere in <%= @deck.name %>.</p>
+      </div>
+      <div class="flex items-center gap-2.5 flex-wrap justify-end">
+        <%= link_to "Back", deck_card_path(@deck, @card), data: { turbo_frame: "workspace_pane" }, class: "btn btn-tertiary" %>
+      </div>
+    </div>
+
+    <div class="card card-flush">
+      <% if @available.any? %>
+        <div id="available_assemblies_list">
+          <% @available.each do |gift_assembly| %>
+            <%= render "cards/available_assembly_row", gift_assembly: gift_assembly %>
+          <% end %>
+        </div>
+      <% else %>
+        <div class="flex flex-col items-center gap-2 text-center py-14 px-6">
+          <p class="m-0 text-base font-bold">Every catalog assembly is already placed in this deck</p>
+          <p class="mb-2 text-text-muted text-[13.5px]">Create a new one for this card instead.</p>
+          <%= link_to "+ Create new gift assembly", new_assembly_path, class: "btn btn-primary" %>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+</div>

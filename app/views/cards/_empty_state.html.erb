@@ -1,0 +1,8 @@
+<div id="card_assemblies_empty" class="<%= "hidden" unless card_assemblies_count.zero? %>">
+  <div class="flex flex-col items-center gap-2 text-center py-14 px-6">
+    <p class="m-0 text-base font-bold">No gift assemblies yet</p>
+    <p class="mb-2 text-text-muted text-[13.5px]">Add one from the catalog to start filling this card.</p>
+    <%= link_to "+ Add Gift Assembly", available_assemblies_deck_card_path(deck, card),
+          data: { turbo_frame: "workspace_pane" }, class: "btn btn-primary" %>
+  </div>
+</div>

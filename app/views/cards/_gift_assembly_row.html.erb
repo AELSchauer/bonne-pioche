@@ -1,0 +1,13 @@
+<div class="flex items-center justify-between gap-3 px-5 py-3 border-b border-border last:border-b-0"
+     id="card_assembly_<%= card_assembly.id %>"
+     draggable="true"
+     data-reassign-target="row"
+     data-action="dragstart->reassign#dragStart dragend->reassign#dragEnd"
+     data-card-assembly-id="<%= card_assembly.id %>">
+  <div class="flex items-center gap-2.5">
+    <span class="text-text-faint cursor-grab select-none" aria-hidden="true">⠿⠿</span>
+    <span class="text-[13.5px] font-medium text-text"><%= card_assembly.gift_assembly.name %></span>
+  </div>
+  <%= button_to "Remove", deck_card_assembly_path(card_assembly.deck, card_assembly), method: :delete,
+        class: "btn btn-tertiary btn-sm" %>
+</div>

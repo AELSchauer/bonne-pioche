@@ -1,0 +1,10 @@
+<%= link_to deck_card_path(card.deck, card),
+      id: "rail_card_#{card.id}",
+      data: {
+        turbo_frame: "workspace_pane", reassign_target: "dropzone", card_id: card.id,
+        action: "dragover->reassign#over dragleave->reassign#leave drop->reassign#drop"
+      },
+      class: "flex items-center justify-between gap-2 px-2 py-1.5 rounded-sm text-[13.5px] transition-colors #{card == current_card ? "bg-accent text-accent-contrast font-semibold" : "text-text-muted hover:bg-surface-alt"}" do %>
+  <span class="truncate"><%= card.name %></span>
+  <span class="text-xs flex-none <%= card == current_card ? "text-accent-contrast/80" : "text-text-faint" %>" id="rail_card_count_<%= card.id %>"><%= card.card_assemblies.size %></span>
+<% end %>

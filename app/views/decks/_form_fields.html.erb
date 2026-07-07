@@ -1,0 +1,21 @@
+<section class="mb-7.5 last:mb-0">
+  <h2 class="m-0 mb-4 text-[15px] font-bold">Basics</h2>
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-[22px] gap-y-5">
+    <div class="sm:col-span-2">
+      <%= f.label :name, "Deck name", class: "block mb-1.5 text-[13px] font-semibold text-text" %>
+      <%= f.text_field :name, placeholder: "e.g. Founders Series", class: "field-input", required: true %>
+    </div>
+
+    <div>
+      <%= f.label :tier, "Tier", class: "block mb-1.5 text-[13px] font-semibold text-text" %>
+      <%= f.select :tier, options_for_select(DecksController::TIERS.map { |value, label| [ label, value ] }, @deck.tier),
+            { include_blank: "Select tier" }, id: "deck_tier", class: "field-input" %>
+    </div>
+
+    <div>
+      <%= f.label :status, "Status", class: "block mb-1.5 text-[13px] font-semibold text-text" %>
+      <%= f.select :status, DecksController::STATUSES.map { |value, label| [ label, value ] }, {}, id: "deck_status", class: "field-input" %>
+      <p class="mt-1.5 text-xs text-text-faint">Draft &middot; Active &middot; Inactive &middot; Archived</p>
+    </div>
+  </div>
+</section>

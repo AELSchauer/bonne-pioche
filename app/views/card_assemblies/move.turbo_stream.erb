@@ -1,0 +1,13 @@
+<%= turbo_stream.remove "card_assembly_#{@card_assembly.id}" %>
+
+<%= turbo_stream.replace "card_assemblies_empty" do %>
+  <%= render "cards/empty_state", deck: @deck, card: @source_card, card_assemblies_count: @source_card.card_assemblies.count %>
+<% end %>
+
+<%= turbo_stream.update "card_assemblies_count_label", "Gift Assemblies (#{@source_card.card_assemblies.count})" %>
+<%= turbo_stream.update "rail_card_count_#{@source_card.id}", @source_card.card_assemblies.count %>
+<%= turbo_stream.update "rail_card_count_#{@target_card.id}", @target_card.card_assemblies.count %>
+
+<%= turbo_stream.prepend "flash_container" do %>
+  <%= render "shared/toast", message: "Moved #{@card_assembly.gift_assembly.name} to #{@target_card.name}" %>
+<% end %>
