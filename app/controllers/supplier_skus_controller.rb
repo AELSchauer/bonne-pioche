@@ -15,6 +15,7 @@ class SupplierSkusController < ApplicationController
     @supplier_sku = @supplier.supplier_skus.new(supplier_sku_params)
 
     if @supplier_sku.save
+      assign_supplier_to_components
       redirect_to supplier_supplier_skus_path(@supplier), notice: "SKU saved."
     else
       load_form_collections
@@ -31,6 +32,7 @@ class SupplierSkusController < ApplicationController
     @supplier_sku = @supplier.supplier_skus.find(params[:id])
 
     if @supplier_sku.update(supplier_sku_params)
+      assign_supplier_to_components
       redirect_to supplier_supplier_skus_path(@supplier), notice: "SKU saved."
     else
       load_form_collections
@@ -51,7 +53,14 @@ class SupplierSkusController < ApplicationController
   end
 
   def load_form_collections
-    @components = Component.order(:name)
+    @components = Component.where(supplier_id: [ nil, @supplier.id ]).order(:name)
+  end
+
+  def assign_supplier_to_components
+    @supplier_sku.reload.supplier_sku_components.includes(:component).each do |supplier_sku_component|
+      component = supplier_sku_component.component
+      component.update!(supplier: @supplier) if component.supplier_id.nil?
+    end
   end
 
   def supplier_sku_params

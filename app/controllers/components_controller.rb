@@ -6,11 +6,11 @@ class ComponentsController < ApplicationController
   SKU_PREFIXES = { "GFT" => "Gift", "PKG" => "Packaging" }.freeze
 
   def index
-    @components = Component.includes(restrictions: :restriction_name).order(:name).to_a
+    @components = Component.includes(:supplier, restrictions: :restriction_name).order(:name).to_a
   end
 
   def show
-    @component = Component.find(params[:id])
+    @component = Component.includes(:supplier).find(params[:id])
   end
 
   def new
@@ -41,7 +41,7 @@ class ComponentsController < ApplicationController
     @component = Component.find(params[:id])
     @component.image.purge if params.dig(:component, :remove_image) == "1"
 
-    if @component.update(component_params.except(:sku_prefix))
+    if @component.update(component_params)
       sync_restrictions(@component, :component)
       redirect_to components_path, notice: "Component saved."
     else
@@ -64,9 +64,10 @@ class ComponentsController < ApplicationController
 
   def load_form_collections
     @restriction_options = RestrictionName.order(:name)
+    @suppliers = Supplier.order(:name)
   end
 
   def component_params
-    params.require(:component).permit(:name, :status, :sku_prefix, :image)
+    params.require(:component).permit(:name, :status, :sku_prefix, :supplier_id, :image)
   end
 end

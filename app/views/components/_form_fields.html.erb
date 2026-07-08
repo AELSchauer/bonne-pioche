@@ -8,16 +8,20 @@
 
     <div class="sm:col-span-2">
       <span class="block mb-1.5 text-[13px] font-semibold text-text">Primary SKU</span>
-      <% if @component.persisted? %>
-        <input class="field-input field-input-readonly" type="text" readonly tabindex="-1" value="<%= @component.sku %>">
-        <p class="mt-1.5 text-xs text-text-faint">Assigned at creation; can't be changed.</p>
-      <% else %>
-        <% default_sku_prefix = @selected_sku_prefix.presence || ComponentsController::SKU_PREFIXES.keys.first %>
+      <% default_sku_prefix = @component.persisted? ? @component.sku_prefix : (@selected_sku_prefix.presence || ComponentsController::SKU_PREFIXES.keys.first) %>
+      <div class="flex items-center gap-2">
         <select class="field-input w-[180px]" id="component_sku_prefix" name="component[sku_prefix]">
           <% ComponentsController::SKU_PREFIXES.each do |code, label| %>
             <option value="<%= code %>" <%= "selected" if code == default_sku_prefix %>><%= "#{code} — #{label}" %></option>
           <% end %>
         </select>
+        <% if @component.persisted? %>
+          <span class="text-sm text-text-faint">-<%= @component.sku_number %></span>
+        <% end %>
+      </div>
+      <% if @component.persisted? %>
+        <p class="mt-1.5 text-xs text-text-faint">The SKU number is assigned at creation and can't be changed.</p>
+      <% else %>
         <p class="mt-1.5 text-xs text-text-faint">A unique number is assigned automatically when you save.</p>
       <% end %>
     </div>
@@ -32,6 +36,11 @@
       <%= f.label :status, "Status", class: "block mb-1.5 text-[13px] font-semibold text-text" %>
       <%= f.select :status, ComponentsController::STATUSES.map { |value, label| [ label, value ] }, {}, id: "component_status", class: "field-input" %>
       <p class="mt-1.5 text-xs text-text-faint">Draft &middot; Active &middot; Inactive &middot; Archived</p>
+    </div>
+
+    <div>
+      <%= f.label :supplier_id, "Supplier", class: "block mb-1.5 text-[13px] font-semibold text-text" %>
+      <%= f.select :supplier_id, @suppliers.map { |supplier| [ supplier.name, supplier.id ] }, { include_blank: "— None —" }, id: "component_supplier_id", class: "field-input" %>
     </div>
   </div>
 </section>

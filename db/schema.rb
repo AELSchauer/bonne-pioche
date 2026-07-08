@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_07_08_191116) do
+ActiveRecord::Schema[8.1].define(version: 2026_07_08_191657) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -102,10 +102,12 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_08_191116) do
     t.integer "sku_number", null: false
     t.string "sku_prefix", null: false
     t.string "status"
+    t.bigint "supplier_id"
     t.string "type"
     t.integer "unit_of_measure"
     t.datetime "updated_at", null: false
     t.index ["sku_number"], name: "index_components_on_sku_number", unique: true
+    t.index ["supplier_id"], name: "index_components_on_supplier_id"
   end
 
   create_table "decks", force: :cascade do |t|
@@ -195,6 +197,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_08_191116) do
   add_foreign_key "card_assemblies", "cards"
   add_foreign_key "card_assemblies", "decks"
   add_foreign_key "cards", "decks"
+  add_foreign_key "components", "suppliers", on_delete: :nullify
   add_foreign_key "restrictions", "restriction_names"
   add_foreign_key "supplier_sku_components", "components"
   add_foreign_key "supplier_sku_components", "supplier_skus"

@@ -1,5 +1,6 @@
 class Supplier < ApplicationRecord
   has_many :supplier_skus, dependent: :destroy
+  has_many :components
 
   validates :name, presence: true, uniqueness: true
   validates :sourcing_channel, presence: true
