@@ -16,55 +16,144 @@
     <p class="mt-1.5 mb-0 text-text-muted text-sm">SKUs (<%= @supplier_skus.size %>)</p>
   </div>
   <div class="flex items-center gap-2.5 flex-wrap justify-end">
-    <%= link_to "Edit supplier", edit_supplier_path(@supplier), class: "btn btn-secondary" %>
-    <%= link_to "+ Add SKU", new_supplier_supplier_sku_path(@supplier), class: "btn btn-primary" %>
+    <%= link_to "Edit Supplier", edit_supplier_path(@supplier), class: "btn btn-secondary" %>
+    <%= link_to "Edit SKUs", supplier_supplier_skus_path(@supplier), class: "btn btn-primary" %>
   </div>
 </div>
 
-<div class="card card-flush">
-  <% if @supplier_skus.any? %>
-    <div class="overflow-x-auto">
-      <table class="w-full min-w-[480px] border-collapse">
-        <thead>
-          <tr>
-            <th class="text-left px-5 py-3 text-xs font-bold uppercase tracking-wide text-text-faint bg-surface-alt border-b border-border">Name</th>
-            <th class="text-left px-5 py-3 text-xs font-bold uppercase tracking-wide text-text-faint bg-surface-alt border-b border-border">SKU code</th>
-            <th class="text-left px-5 py-3 text-xs font-bold uppercase tracking-wide text-text-faint bg-surface-alt border-b border-border">Components</th>
-            <th class="text-left px-5 py-3 text-xs font-bold uppercase tracking-wide text-text-faint bg-surface-alt border-b border-border">Cost/unit</th>
-            <th class="text-left px-5 py-3 text-xs font-bold uppercase tracking-wide text-text-faint bg-surface-alt border-b border-border"></th>
-          </tr>
-        </thead>
-        <tbody>
-          <% @supplier_skus.each do |supplier_sku| %>
-            <tr class="hover:bg-surface-alt">
-              <td class="px-5 py-3.5 text-[13.5px] border-b border-border align-middle font-semibold text-text"><%= supplier_sku.name %></td>
-              <td class="px-5 py-3.5 text-[13.5px] border-b border-border align-middle"><%= supplier_sku.sku.presence || "—" %></td>
-              <td class="px-5 py-3.5 text-[13.5px] border-b border-border align-middle"><%= supplier_sku.supplier_sku_components.size %></td>
-              <td class="px-5 py-3.5 text-[13.5px] border-b border-border align-middle">
-                <% if supplier_sku.wholesale_per_unit_cost_cents %>
-                  <%= number_to_currency(supplier_sku.wholesale_per_unit_cost_cents / 100.0) %>
-                <% else %>
-                  <span class="text-text-faint">—</span>
-                <% end %>
-              </td>
-              <td class="px-5 py-3.5 text-[13.5px] border-b border-border align-middle">
-                <div class="flex gap-2 justify-end">
-                  <%= link_to "View", supplier_supplier_sku_path(@supplier, supplier_sku), class: "btn btn-tertiary btn-sm" %>
-                  <%= link_to "Edit", edit_supplier_supplier_sku_path(@supplier, supplier_sku), class: "btn btn-secondary btn-sm" %>
-                  <%= button_to "Delete", supplier_supplier_sku_path(@supplier, supplier_sku), method: :delete,
-                        data: { turbo_confirm: "Delete #{supplier_sku.name}?" }, class: "btn btn-tertiary btn-sm" %>
-                </div>
-              </td>
-            </tr>
-          <% end %>
-        </tbody>
-      </table>
+<div class="card mb-5">
+  <section class="mb-6 last:mb-0">
+    <h2 class="m-0 mb-4 text-[15px] font-bold">Details</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-[22px] gap-y-5">
+      <div>
+        <span class="block mb-1 text-xs font-bold uppercase tracking-wide text-text-faint">Website</span>
+        <% if @supplier.website_url.present? %>
+          <%= link_to @supplier.website_url, @supplier.website_url, target: "_blank", rel: "noopener", class: "text-sm text-accent-dark hover:underline break-all" %>
+        <% else %>
+          <span class="text-sm text-text-faint">—</span>
+        <% end %>
+      </div>
+
+      <div>
+        <span class="block mb-1 text-xs font-bold uppercase tracking-wide text-text-faint">Sourcing channel</span>
+        <span class="text-sm text-text"><%= @supplier.sourcing_channel %></span>
+      </div>
+
+      <div>
+        <span class="block mb-1 text-xs font-bold uppercase tracking-wide text-text-faint">Account status</span>
+        <span class="text-sm text-text"><%= @supplier.account_status %></span>
+      </div>
+
+      <div>
+        <span class="block mb-1 text-xs font-bold uppercase tracking-wide text-text-faint">Lead time</span>
+        <span class="text-sm text-text"><%= @supplier.lead_time.presence || "—" %></span>
+      </div>
+
+      <div>
+        <span class="block mb-1 text-xs font-bold uppercase tracking-wide text-text-faint">Minimum order</span>
+        <span class="text-sm text-text"><%= @supplier.min_order_dollars ? number_to_currency(@supplier.min_order_dollars) : "—" %></span>
+      </div>
+
+      <div>
+        <span class="block mb-1 text-xs font-bold uppercase tracking-wide text-text-faint">Free shipping minimum</span>
+        <span class="text-sm text-text"><%= @supplier.min_order_free_shipping ? number_to_currency(@supplier.min_order_free_shipping) : "—" %></span>
+      </div>
+
+      <div class="sm:col-span-2">
+        <span class="block mb-1 text-xs font-bold uppercase tracking-wide text-text-faint">Description</span>
+        <% if @supplier.description.present? %>
+          <p class="m-0 text-sm text-text whitespace-pre-line"><%= @supplier.description %></p>
+        <% else %>
+          <span class="text-sm text-text-faint">—</span>
+        <% end %>
+      </div>
+
+      <div class="sm:col-span-2">
+        <span class="block mb-1 text-xs font-bold uppercase tracking-wide text-text-faint">Notes</span>
+        <% if @supplier.notes.present? %>
+          <p class="m-0 text-sm text-text whitespace-pre-line"><%= @supplier.notes %></p>
+        <% else %>
+          <span class="text-sm text-text-faint">—</span>
+        <% end %>
+      </div>
     </div>
-  <% else %>
+  </section>
+</div>
+
+<% if @supplier_skus.any? %>
+  <div class="flex flex-col gap-5">
+    <% @supplier_skus.each do |supplier_sku| %>
+      <div class="card">
+        <div class="flex items-start justify-between gap-5 mb-5">
+          <div>
+            <h2 class="m-0 text-lg font-bold"><%= supplier_sku.name %></h2>
+            <p class="mt-1 mb-0 text-text-muted text-sm"><%= supplier_sku.sku.presence || "No SKU code" %></p>
+          </div>
+        </div>
+
+        <section class="mb-6 last:mb-0">
+          <h3 class="m-0 mb-4 text-[13px] font-bold uppercase tracking-wide text-text-faint">Wholesale pricing</h3>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-[22px] gap-y-5">
+            <div>
+              <span class="block mb-1 text-xs font-bold uppercase tracking-wide text-text-faint">Wholesale cost</span>
+              <span class="text-sm text-text"><%= supplier_sku.wholesale_cost ? number_to_currency(supplier_sku.wholesale_cost) : "—" %></span>
+            </div>
+
+            <div>
+              <span class="block mb-1 text-xs font-bold uppercase tracking-wide text-text-faint">Quantity per purchase</span>
+              <span class="text-sm text-text"><%= supplier_sku.wholesale_quantity || "—" %></span>
+            </div>
+
+            <div>
+              <span class="block mb-1 text-xs font-bold uppercase tracking-wide text-text-faint">Cost per unit</span>
+              <span class="text-sm text-text"><%= supplier_sku.wholesale_per_unit_cost_cents ? number_to_currency(supplier_sku.wholesale_per_unit_cost_cents / 100.0) : "—" %></span>
+            </div>
+
+            <div>
+              <span class="block mb-1 text-xs font-bold uppercase tracking-wide text-text-faint">Wholesale URL</span>
+              <% if supplier_sku.wholesale_url.present? %>
+                <%= link_to supplier_sku.wholesale_url, supplier_sku.wholesale_url, target: "_blank", rel: "noopener", class: "text-sm text-accent-dark hover:underline break-all" %>
+              <% else %>
+                <span class="text-sm text-text-faint">—</span>
+              <% end %>
+            </div>
+          </div>
+        </section>
+
+        <section>
+          <h3 class="m-0 mb-4 text-[13px] font-bold uppercase tracking-wide text-text-faint">Components</h3>
+          <% if supplier_sku.supplier_sku_components.any? %>
+            <div class="overflow-x-auto">
+              <table class="w-full min-w-[360px] border-collapse">
+                <thead>
+                  <tr>
+                    <th class="text-left px-3 py-2 text-xs font-bold uppercase tracking-wide text-text-faint bg-surface-alt border-b border-border">Component</th>
+                    <th class="text-left px-3 py-2 text-xs font-bold uppercase tracking-wide text-text-faint bg-surface-alt border-b border-border w-24">Qty</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% supplier_sku.supplier_sku_components.each do |supplier_sku_component| %>
+                    <tr>
+                      <td class="px-3 py-2 text-[13.5px] border-b border-border last:border-b-0 align-middle"><%= supplier_sku_component.component.name %></td>
+                      <td class="px-3 py-2 text-[13.5px] border-b border-border last:border-b-0 align-middle"><%= supplier_sku_component.quantity %></td>
+                    </tr>
+                  <% end %>
+                </tbody>
+              </table>
+            </div>
+          <% else %>
+            <p class="text-[13px] text-text-faint">No components added yet.</p>
+          <% end %>
+        </section>
+      </div>
+    <% end %>
+  </div>
+<% else %>
+  <div class="card card-flush">
     <div class="flex flex-col items-center gap-2 text-center py-14 px-6">
       <p class="m-0 text-base font-bold">No SKUs yet</p>
       <p class="mb-2 text-text-muted text-[13.5px]">Add a SKU and build its component BOM.</p>
       <%= link_to "+ Add SKU", new_supplier_supplier_sku_path(@supplier), class: "btn btn-primary" %>
     </div>
-  <% end %>
-</div>
+  </div>
+<% end %>

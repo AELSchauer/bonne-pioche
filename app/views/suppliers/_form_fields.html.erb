@@ -5,5 +5,55 @@
       <%= f.label :name, "Supplier name", class: "block mb-1.5 text-[13px] font-semibold text-text" %>
       <%= f.text_field :name, placeholder: "e.g. Acme Wholesale", class: "field-input", required: true %>
     </div>
+
+    <div>
+      <%= f.label :website_url, "Website URL", class: "block mb-1.5 text-[13px] font-semibold text-text" %>
+      <%= f.text_field :website_url, placeholder: "https://…", class: "field-input" %>
+    </div>
+
+    <div class="sm:col-span-2">
+      <%= f.label :description, "Description", class: "block mb-1.5 text-[13px] font-semibold text-text" %>
+      <%= f.text_area :description, class: "field-input resize-y min-h-20", rows: 4 %>
+    </div>
+  </div>
+</section>
+
+<section class="mb-7.5 last:mb-0">
+  <h2 class="m-0 mb-4 text-[15px] font-bold">Sourcing</h2>
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-[22px] gap-y-5">
+    <div>
+      <%= f.label :sourcing_channel, "Sourcing channel", class: "block mb-1.5 text-[13px] font-semibold text-text" %>
+      <%= f.text_field :sourcing_channel, placeholder: "e.g. Direct, Distributor, Marketplace", class: "field-input", required: true %>
+    </div>
+
+    <div>
+      <%= f.label :account_status, "Account status", class: "block mb-1.5 text-[13px] font-semibold text-text" %>
+      <%= f.text_field :account_status, placeholder: "e.g. Active, Pending, Inactive", class: "field-input", required: true %>
+    </div>
+
+    <div>
+      <%= f.label :min_order_dollars, "Minimum order ($)", class: "block mb-1.5 text-[13px] font-semibold text-text" %>
+      <%= f.number_field :min_order_dollars, min: 0, class: "field-input", required: true %>
+    </div>
+
+    <div>
+      <%= f.label :min_order_free_shipping, "Free shipping minimum ($)", class: "block mb-1.5 text-[13px] font-semibold text-text" %>
+      <%= f.number_field :min_order_free_shipping, min: 0, class: "field-input" %>
+    </div>
+
+    <div>
+      <%= f.label :lead_time, "Lead time", class: "block mb-1.5 text-[13px] font-semibold text-text" %>
+      <%= f.text_field :lead_time, placeholder: "e.g. 2-3 weeks", class: "field-input" %>
+    </div>
+  </div>
+</section>
+
+<section class="mb-7.5 last:mb-0">
+  <h2 class="m-0 mb-4 text-[15px] font-bold">Notes</h2>
+  <div class="grid grid-cols-1 gap-y-5">
+    <div>
+      <%= f.label :notes, "Notes", class: "block mb-1.5 text-[13px] font-semibold text-text" %>
+      <%= f.text_area :notes, class: "field-input resize-y min-h-20", rows: 4 %>
+    </div>
   </div>
 </section>

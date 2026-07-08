@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_07_07_050329) do
+ActiveRecord::Schema[8.1].define(version: 2026_07_08_191116) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -176,9 +176,17 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_07_050329) do
   end
 
   create_table "suppliers", force: :cascade do |t|
+    t.string "account_status"
     t.datetime "created_at", null: false
+    t.text "description"
+    t.string "lead_time"
+    t.integer "min_order_dollars"
+    t.integer "min_order_free_shipping"
     t.string "name"
+    t.text "notes"
+    t.string "sourcing_channel"
     t.datetime "updated_at", null: false
+    t.string "website_url"
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"

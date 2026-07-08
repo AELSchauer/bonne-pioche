@@ -37,7 +37,8 @@
               <td class="px-5 py-3.5 text-[13.5px] border-b border-border align-middle">
                 <div class="flex gap-2 justify-end">
                   <%= link_to "View", supplier_path(supplier), class: "btn btn-tertiary btn-sm" %>
-                  <%= link_to "Edit", edit_supplier_path(supplier), class: "btn btn-secondary btn-sm" %>
+                  <%= link_to "Edit Supplier", edit_supplier_path(supplier), class: "btn btn-secondary btn-sm" %>
+                  <%= link_to "Edit SKUs", supplier_supplier_skus_path(supplier), class: "btn btn-secondary btn-sm" %>
                   <%= button_to "Delete", supplier_path(supplier), method: :delete,
                         data: { turbo_confirm: "Delete #{supplier.name}? All #{supplier.supplier_skus.size} SKU(s) will be deleted too." },
                         class: "btn btn-tertiary btn-sm" %>

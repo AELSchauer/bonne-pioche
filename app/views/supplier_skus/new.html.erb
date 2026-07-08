@@ -5,6 +5,8 @@
   <span class="text-text-faint">&rsaquo;</span>
   <%= link_to @supplier.name, supplier_path(@supplier) %>
   <span class="text-text-faint">&rsaquo;</span>
+  <%= link_to "Edit SKUs", supplier_supplier_skus_path(@supplier) %>
+  <span class="text-text-faint">&rsaquo;</span>
   <span class="text-text font-semibold">New SKU</span>
 </p>
 
@@ -17,7 +19,7 @@
       <p class="mt-1.5 mb-0 text-text-muted text-sm">A purchasable SKU from <%= @supplier.name %> and the components it contains.</p>
     </div>
     <div class="flex items-center gap-2.5 flex-wrap justify-end">
-      <%= link_to "Cancel", supplier_path(@supplier), class: "btn btn-tertiary", data: { action: "form-guard#confirmCancel" } %>
+      <%= link_to "Cancel", supplier_supplier_skus_path(@supplier), class: "btn btn-tertiary", data: { action: "form-guard#confirmCancel" } %>
       <%= f.submit "Save SKU", class: "btn btn-primary" %>
     </div>
   </div>
@@ -35,7 +37,7 @@
   <div class="flex items-center justify-between gap-4 mt-5.5 px-5 py-4 bg-surface border border-border rounded-lg flex-wrap sm:flex-nowrap">
     <span class="text-[13px] text-text-muted">Saved to <%= @supplier.name %>.</span>
     <div class="flex items-center gap-2.5 flex-wrap justify-end">
-      <%= link_to "Cancel", supplier_path(@supplier), class: "btn btn-tertiary", data: { action: "form-guard#confirmCancel" } %>
+      <%= link_to "Cancel", supplier_supplier_skus_path(@supplier), class: "btn btn-tertiary", data: { action: "form-guard#confirmCancel" } %>
       <%= f.submit "Save SKU", class: "btn btn-primary" %>
     </div>
   </div>

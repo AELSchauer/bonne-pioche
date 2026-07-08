@@ -5,7 +5,7 @@ class SuppliersController < ApplicationController
 
   def show
     @supplier = Supplier.find(params[:id])
-    @supplier_skus = @supplier.supplier_skus.includes(:supplier_sku_components).order(:name)
+    @supplier_skus = @supplier.supplier_skus.includes(supplier_sku_components: :component).order(:name)
   end
 
   def new
@@ -45,6 +45,7 @@ class SuppliersController < ApplicationController
   private
 
   def supplier_params
-    params.require(:supplier).permit(:name)
+    params.require(:supplier).permit(:name, :website_url, :description, :sourcing_channel, :account_status,
+      :min_order_dollars, :min_order_free_shipping, :lead_time, :notes)
   end
 end

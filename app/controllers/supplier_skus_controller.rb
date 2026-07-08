@@ -1,8 +1,8 @@
 class SupplierSkusController < ApplicationController
   before_action :set_supplier
 
-  def show
-    @supplier_sku = @supplier.supplier_skus.includes(supplier_sku_components: :component).find(params[:id])
+  def index
+    @supplier_skus = @supplier.supplier_skus.includes(:supplier_sku_components).order(:name)
   end
 
   def new
@@ -15,7 +15,7 @@ class SupplierSkusController < ApplicationController
     @supplier_sku = @supplier.supplier_skus.new(supplier_sku_params)
 
     if @supplier_sku.save
-      redirect_to supplier_path(@supplier), notice: "SKU saved."
+      redirect_to supplier_supplier_skus_path(@supplier), notice: "SKU saved."
     else
       load_form_collections
       render :new, status: :unprocessable_entity
@@ -31,7 +31,7 @@ class SupplierSkusController < ApplicationController
     @supplier_sku = @supplier.supplier_skus.find(params[:id])
 
     if @supplier_sku.update(supplier_sku_params)
-      redirect_to supplier_path(@supplier), notice: "SKU saved."
+      redirect_to supplier_supplier_skus_path(@supplier), notice: "SKU saved."
     else
       load_form_collections
       render :edit, status: :unprocessable_entity
@@ -41,7 +41,7 @@ class SupplierSkusController < ApplicationController
   def destroy
     @supplier_sku = @supplier.supplier_skus.find(params[:id])
     @supplier_sku.destroy
-    redirect_to supplier_path(@supplier), notice: "SKU deleted."
+    redirect_to supplier_supplier_skus_path(@supplier), notice: "SKU deleted."
   end
 
   private
