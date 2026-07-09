@@ -5,8 +5,24 @@ class ComponentsController < ApplicationController
   STATUSES = { "draft" => "Draft", "active" => "Active", "inactive" => "Inactive", "archived" => "Archived" }.freeze
   SKU_PREFIXES = { "GFT" => "Gift", "PKG" => "Packaging" }.freeze
 
+  SORT_COLUMNS = %w[name supplier].freeze
+
   def index
-    @components = Component.includes(:supplier, restrictions: :restriction_name).order(:name).to_a
+    @name_filter = params[:name].to_s.strip
+    @supplier_filter = params[:supplier].to_s.strip
+    @sort = SORT_COLUMNS.include?(params[:sort]) ? params[:sort] : "name"
+    @direction = params[:direction] == "desc" ? "desc" : "asc"
+
+    @components = Component.eager_load(:supplier).includes(restrictions: :restriction_name)
+    @components = @components.where("components.name ILIKE ?", "%#{@name_filter}%") if @name_filter.present?
+    @components = @components.where("suppliers.name ILIKE ?", "%#{@supplier_filter}%") if @supplier_filter.present?
+
+    @components = if @sort == "supplier"
+      nulls = @direction == "desc" ? "NULLS FIRST" : "NULLS LAST"
+      @components.order(Arel.sql("suppliers.name #{@direction} #{nulls}"))
+    else
+      @components.order(name: @direction.to_sym)
+    end.to_a
   end
 
   def show

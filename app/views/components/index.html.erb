@@ -18,13 +18,36 @@
   </div>
 </div>
 
+<% filtering = @name_filter.present? || @supplier_filter.present? %>
+
+<%= form_with url: components_path, method: :get, class: "flex items-end gap-3 flex-wrap mb-5" do %>
+  <input type="hidden" name="sort" value="<%= @sort %>">
+  <input type="hidden" name="direction" value="<%= @direction %>">
+
+  <div>
+    <label class="block mb-1.5 text-[13px] font-semibold text-text" for="filter_name">Name</label>
+    <input type="text" name="name" id="filter_name" value="<%= @name_filter %>" placeholder="Filter by name" class="field-input">
+  </div>
+
+  <div>
+    <label class="block mb-1.5 text-[13px] font-semibold text-text" for="filter_supplier">Supplier</label>
+    <input type="text" name="supplier" id="filter_supplier" value="<%= @supplier_filter %>" placeholder="Filter by supplier" class="field-input">
+  </div>
+
+  <button type="submit" class="btn btn-secondary">Filter</button>
+  <% if filtering %>
+    <%= link_to "Clear", components_path(sort: @sort, direction: @direction), class: "btn btn-tertiary" %>
+  <% end %>
+<% end %>
+
 <div class="card card-flush">
   <% if @components.any? %>
     <div class="overflow-x-auto">
       <table class="w-full min-w-[560px] border-collapse">
         <thead>
           <tr>
-            <th class="text-left px-5 py-3 text-xs font-bold uppercase tracking-wide text-text-faint bg-surface-alt border-b border-border">Name</th>
+            <th class="text-left px-5 py-3 text-xs font-bold uppercase tracking-wide text-text-faint bg-surface-alt border-b border-border"><%= sortable_column_header(:name, "Name") %></th>
+            <th class="text-left px-5 py-3 text-xs font-bold uppercase tracking-wide text-text-faint bg-surface-alt border-b border-border"><%= sortable_column_header(:supplier, "Supplier") %></th>
             <th class="text-left px-5 py-3 text-xs font-bold uppercase tracking-wide text-text-faint bg-surface-alt border-b border-border">Restrictions</th>
             <th class="text-left px-5 py-3 text-xs font-bold uppercase tracking-wide text-text-faint bg-surface-alt border-b border-border">Status</th>
             <th class="text-left px-5 py-3 text-xs font-bold uppercase tracking-wide text-text-faint bg-surface-alt border-b border-border"></th>
@@ -33,7 +56,8 @@
         <tbody>
           <% @components.each do |component| %>
             <tr class="hover:bg-surface-alt">
-              <td class="px-5 py-3.5 text-[13.5px] border-b border-border align-middle font-semibold text-text"><%= component.supplier&.name || "TBD" %> -- <%= component.name %></td>
+              <td class="px-5 py-3.5 text-[13.5px] border-b border-border align-middle font-semibold text-text"><%= component.name %></td>
+              <td class="px-5 py-3.5 text-[13.5px] border-b border-border align-middle"><%= component.supplier&.name || "TBD" %></td>
               <td class="px-5 py-3.5 text-[13.5px] border-b border-border align-middle">
                 <% if component.restrictions.any? %>
                   <div class="flex flex-wrap gap-1.5">
@@ -59,6 +83,11 @@
           <% end %>
         </tbody>
       </table>
+    </div>
+  <% elsif filtering %>
+    <div class="flex flex-col items-center gap-2 text-center py-14 px-6">
+      <p class="m-0 text-base font-bold">No components match your filters</p>
+      <%= link_to "Clear filters", components_path(sort: @sort, direction: @direction), class: "btn btn-primary" %>
     </div>
   <% else %>
     <div class="flex flex-col items-center gap-2 text-center py-14 px-6">

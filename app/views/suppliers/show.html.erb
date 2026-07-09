@@ -89,6 +89,7 @@
             <h2 class="m-0 text-lg font-bold"><%= supplier_sku.name %></h2>
             <p class="mt-1 mb-0 text-text-muted text-sm"><%= supplier_sku.sku.presence || "No SKU code" %></p>
           </div>
+          <%= link_to "Edit", edit_supplier_supplier_sku_path(@supplier, supplier_sku), class: "btn btn-secondary btn-sm" %>
         </div>
 
         <section class="mb-6 last:mb-0">
