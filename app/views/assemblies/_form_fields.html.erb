@@ -38,31 +38,16 @@
     </div>
 
     <% is_gift_assembly = @assembly.persisted? ? @assembly.is_a?(GiftAssembly) : true %>
-    <% selected_card_id = @selected_card_id.presence || (@assembly.is_a?(GiftAssembly) ? @assembly.card_id : nil) %>
-    <% selected_card = Card.find_by(id: selected_card_id) %>
-    <% selected_deck = selected_card&.deck %>
-    <% card_options = (selected_deck&.cards || []).map { |c| [ c.name, c.id ] } %>
-    <% cards_by_deck = @decks.each_with_object({}) { |deck, hash| hash[deck.id] = deck.cards.order(:name).map { |c| { value: c.id, label: c.name } } } %>
 
-    <div class="contents <%= "hidden" unless is_gift_assembly %>" data-field-toggle-target="field"
-         data-controller="nested-select" data-nested-select-options-value="<%= cards_by_deck.to_json %>"
-         data-nested-select-child-placeholder-value="Select card">
+    <div class="contents <%= "hidden" unless is_gift_assembly %>" data-field-toggle-target="field">
       <div>
-        <label class="block mb-1.5 text-[13px] font-semibold text-text" for="assembly_deck_id">Deck</label>
-        <select class="field-input" id="assembly_deck_id" data-nested-select-target="parent"
-                data-action="change->nested-select#updateChild">
-          <option value="">Select deck</option>
-          <% @decks.each do |deck| %>
-            <option value="<%= deck.id %>" <%= "selected" if deck == selected_deck %>><%= deck.name %></option>
-          <% end %>
-        </select>
+        <label class="block mb-1.5 text-[13px] font-semibold text-text" for="assembly_msrp">MSRP ($)</label>
+        <%= f.number_field :msrp, value: @assembly.msrp, min: 0, step: 0.01, id: "assembly_msrp", class: "field-input" %>
       </div>
 
       <div>
-        <label class="block mb-1.5 text-[13px] font-semibold text-text" for="assembly_card_id">Card</label>
-        <%= select_tag "assembly[card_id]",
-              options_for_select([ [ "Select card", "" ] ] + card_options, selected_card_id),
-              id: "assembly_card_id", class: "field-input", data: { nested_select_target: "child" } %>
+        <label class="block mb-1.5 text-[13px] font-semibold text-text" for="assembly_msrp_url">MSRP URL</label>
+        <%= f.text_field :msrp_url, placeholder: "https://…", id: "assembly_msrp_url", class: "field-input" %>
       </div>
     </div>
 
@@ -107,10 +92,11 @@
   <% active_line_items = @assembly.assembly_line_items.reject(&:marked_for_destruction?) %>
 
   <div class="overflow-x-auto <%= "hidden" unless active_line_items.any? %>" data-nested-fields-target="tableWrap">
-    <table class="w-full min-w-[480px] border-collapse">
+    <table class="w-full min-w-[640px] border-collapse">
       <thead>
         <tr>
           <th class="text-left px-3 py-2 text-xs font-bold uppercase tracking-wide text-text-faint bg-surface-alt border-b border-border">Component / sub-assembly</th>
+          <th class="text-left px-3 py-2 text-xs font-bold uppercase tracking-wide text-text-faint bg-surface-alt border-b border-border">Alternates</th>
           <th class="text-left px-3 py-2 text-xs font-bold uppercase tracking-wide text-text-faint bg-surface-alt border-b border-border w-28">Qty</th>
           <th class="px-3 py-2 bg-surface-alt border-b border-border w-20"></th>
         </tr>
@@ -133,5 +119,5 @@
     <% end %>
   </template>
 
-  <p class="mt-3 text-xs text-text-faint">Alternates, per-unit costing, and CSV import/export aren't supported yet.</p>
+  <p class="mt-3 text-xs text-text-faint">Per-unit costing and CSV import/export aren't supported yet.</p>
 </section>

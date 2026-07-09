@@ -19,7 +19,7 @@ class ComponentsController < ApplicationController
 
     @components = if @sort == "supplier"
       nulls = @direction == "desc" ? "NULLS FIRST" : "NULLS LAST"
-      @components.order(Arel.sql("suppliers.name #{@direction} #{nulls}"))
+      @components.order(Arel.sql("suppliers.name #{@direction} #{nulls}, components.name ASC"))
     else
       @components.order(name: @direction.to_sym)
     end.to_a

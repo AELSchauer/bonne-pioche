@@ -1,0 +1,7 @@
+<div class="flex items-center gap-1.5" data-nested-fields-target="item">
+  <%= opt.hidden_field :is_primary, value: "0" %>
+  <%= opt.select :option_ref, grouped_options_for_select(@option_groups, opt.object.option_ref),
+        { include_blank: "Select alternate" }, class: "field-input", required: true %>
+  <%= opt.hidden_field :_destroy %>
+  <button type="button" class="btn btn-tertiary btn-sm" data-action="click->nested-fields#remove">×</button>
+</div>

@@ -1,16 +1,31 @@
-<% option = li.object.line_item_options.first || li.object.line_item_options.build %>
+<% line_item_options = li.object.line_item_options.reject(&:marked_for_destruction?) %>
+<% primary_option = line_item_options.find(&:is_primary?) || line_item_options.first || li.object.line_item_options.build %>
+<% alternate_options = line_item_options - [ primary_option ] %>
 <tr data-nested-fields-target="item" class="hover:bg-surface-alt">
-  <td class="px-3 py-2 text-[13.5px] border-b border-border align-middle">
-    <%= li.fields_for :line_item_options, [ option ] do |opt| %>
+  <td class="px-3 py-2 text-[13.5px] border-b border-border align-top">
+    <%= li.fields_for :line_item_options, [ primary_option ] do |opt| %>
       <%= opt.hidden_field :is_primary, value: "1" %>
       <%= opt.select :option_ref, grouped_options_for_select(@option_groups, opt.object.option_ref),
             { include_blank: "Select component or sub-assembly" }, class: "field-input", required: true %>
     <% end %>
   </td>
-  <td class="px-3 py-2 text-[13.5px] border-b border-border align-middle w-28">
+  <td class="px-3 py-2 text-[13.5px] border-b border-border align-top" data-controller="nested-fields">
+    <div class="flex flex-col gap-1.5" data-nested-fields-target="list">
+      <%= li.fields_for :line_item_options, alternate_options do |opt| %>
+        <%= render "alternate_option_fields", opt: opt %>
+      <% end %>
+    </div>
+    <button type="button" class="btn btn-tertiary btn-sm mt-1.5" data-action="click->nested-fields#add">+ Add alternate</button>
+    <template data-nested-fields-target="template">
+      <%= li.fields_for :line_item_options, LineItemOption.new, child_index: "NEW_ALT_RECORD" do |opt| %>
+        <%= render "alternate_option_fields", opt: opt %>
+      <% end %>
+    </template>
+  </td>
+  <td class="px-3 py-2 text-[13.5px] border-b border-border align-top w-28">
     <%= li.number_field :quantity, value: li.object.quantity || 1, min: 1, class: "field-input", required: true %>
   </td>
-  <td class="px-3 py-2 text-[13.5px] border-b border-border align-middle text-center w-20">
+  <td class="px-3 py-2 text-[13.5px] border-b border-border align-top text-center w-20">
     <%= li.hidden_field :_destroy %>
     <button type="button" class="btn btn-tertiary btn-sm" data-action="click->nested-fields#remove">Remove</button>
   </td>
