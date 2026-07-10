@@ -7,7 +7,7 @@ export default class extends Controller {
     event.preventDefault()
     if (this.hasEmptyTarget) this.emptyTarget.remove()
     if (this.hasTableWrapTarget) this.tableWrapTarget.classList.remove("hidden")
-    const content = this.templateTarget.innerHTML.replace(/NEW_RECORD/g, Date.now())
+    const content = this.templateTarget.innerHTML.replace(/NEW_\w*RECORD/g, Date.now())
     this.listTarget.insertAdjacentHTML("beforeend", content)
   }
 
