@@ -1,7 +1,6 @@
 class ComponentsController < ApplicationController
   include ManagesParts
 
-  UNITS = %w[ea pack set g L].freeze
   STATUSES = { "draft" => "Draft", "active" => "Active", "inactive" => "Inactive", "archived" => "Archived" }.freeze
   SKU_PREFIXES = { "GFT" => "Gift", "PKG" => "Packaging" }.freeze
 
@@ -84,6 +83,6 @@ class ComponentsController < ApplicationController
   end
 
   def component_params
-    params.require(:component).permit(:name, :status, :sku_prefix, :supplier_id, :image)
+    params.require(:component).permit(:name, :status, :sku_prefix, :supplier_id, :unit_of_measure, :msrp, :image)
   end
 end

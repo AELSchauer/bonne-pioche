@@ -4,14 +4,28 @@ class AssembliesController < ApplicationController
   STATUSES = { "draft" => "Draft", "active" => "Active", "inactive" => "Inactive", "archived" => "Archived" }.freeze
   SKU_PREFIXES = { "GFT" => "Gift", "PKG" => "Packaging" }.freeze
   TYPES = { "GiftAssembly" => "Gift assembly / Kit", "Assembly" => "Assembly / Sub-Assembly" }.freeze
+  TIERS = { "common" => "Common", "uncommon" => "Uncommon", "rare" => "Rare", "legendary" => "Legendary" }.freeze
 
   def index
-    @assemblies = Assembly.includes(restrictions: :restriction_name).order(:name).to_a
+    @tab = params[:tab] == "sub" ? "sub" : "gift"
+    @assemblies = if @tab == "sub"
+      Assembly.where(type: [ nil, "Assembly" ]).order(:name).to_a
+    else
+      GiftAssembly.order(:name).to_a
+    end
+  end
+
+  def show
+    @assembly = Assembly.includes(
+      restrictions: :restriction_name,
+      assembly_line_items: { line_item_options: :option }
+    ).find(params[:id])
   end
 
   def new
     @assembly = Assembly.new
     clone_from_assembly
+    @selected_type ||= params[:type] if TYPES.key?(params[:type])
     load_form_collections
   end
 
@@ -78,7 +92,7 @@ class AssembliesController < ApplicationController
   end
 
   def assembly_params
-    params.require(:assembly).permit(:name, :status, :sku_prefix, :msrp, :msrp_url,
+    params.require(:assembly).permit(:name, :status, :sku_prefix, :msrp, :msrp_url, :tier,
       assembly_line_items_attributes: [ :id, :quantity, :_destroy,
         line_item_options_attributes: [ :id, :option_ref, :is_primary, :_destroy ] ])
   end

@@ -1,0 +1,58 @@
+<div class="card card-flush">
+  <% if assemblies.any? %>
+    <div class="overflow-x-auto">
+      <table class="w-full min-w-[560px] border-collapse">
+        <thead>
+          <tr>
+            <th class="text-left px-5 py-3 text-xs font-bold uppercase tracking-wide text-text-faint bg-surface-alt border-b border-border">Name</th>
+            <% if show_tier %>
+              <th class="text-left px-5 py-3 text-xs font-bold uppercase tracking-wide text-text-faint bg-surface-alt border-b border-border">Tier</th>
+            <% end %>
+            <th class="text-left px-5 py-3 text-xs font-bold uppercase tracking-wide text-text-faint bg-surface-alt border-b border-border">MSRP</th>
+            <th class="text-left px-5 py-3 text-xs font-bold uppercase tracking-wide text-text-faint bg-surface-alt border-b border-border">Status</th>
+            <th class="text-left px-5 py-3 text-xs font-bold uppercase tracking-wide text-text-faint bg-surface-alt border-b border-border"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% assemblies.each do |assembly| %>
+            <tr class="hover:bg-surface-alt">
+              <td class="px-5 py-3.5 text-[13.5px] border-b border-border align-middle font-semibold text-text"><%= assembly.name %></td>
+              <% if show_tier %>
+                <td class="px-5 py-3.5 text-[13.5px] border-b border-border align-middle">
+                  <% if assembly.tier.present? %>
+                    <%= AssembliesController::TIERS.fetch(assembly.tier, assembly.tier.humanize) %>
+                  <% else %>
+                    <span class="text-text-faint">—</span>
+                  <% end %>
+                </td>
+              <% end %>
+              <td class="px-5 py-3.5 text-[13.5px] border-b border-border align-middle">
+                <% if assembly.is_a?(GiftAssembly) && assembly.msrp %>
+                  <%= number_to_currency(assembly.msrp) %>
+                <% else %>
+                  <span class="text-text-faint">—</span>
+                <% end %>
+              </td>
+              <td class="px-5 py-3.5 text-[13.5px] border-b border-border align-middle">
+                <span class="status-badge <%= "status-badge-active" if assembly.status == "active" %>"><%= assembly.status.humanize %></span>
+              </td>
+              <td class="px-5 py-3.5 text-[13.5px] border-b border-border align-middle">
+                <div class="flex gap-2 justify-end">
+                  <%= link_to "View", assembly_path(assembly), class: "btn btn-tertiary btn-sm" %>
+                  <%= link_to "Clone", new_assembly_path(clone_from: assembly.id), class: "btn btn-tertiary btn-sm" %>
+                  <%= link_to "Edit", edit_assembly_path(assembly), class: "btn btn-secondary btn-sm" %>
+                </div>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% else %>
+    <div class="flex flex-col items-center gap-2 text-center py-14 px-6">
+      <p class="m-0 text-base font-bold"><%= empty_title %></p>
+      <p class="mb-2 text-text-muted text-[13.5px]"><%= empty_body %></p>
+      <%= link_to "+ Add assembly", new_assembly_path(type: add_type), class: "btn btn-primary" %>
+    </div>
+  <% end %>
+</div>

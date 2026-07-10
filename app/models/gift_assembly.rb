@@ -8,14 +8,4 @@ class GiftAssembly < Assembly
     rare: "rare",
     legendary: "legendary"
   }
-
-  # A gift assembly can technically hold a card per deck (the CardAssembly
-  # invariant), but the assembly form only manages a single one for now.
-  def card
-    cards.first
-  end
-
-  def card_id
-    card&.id
-  end
 end

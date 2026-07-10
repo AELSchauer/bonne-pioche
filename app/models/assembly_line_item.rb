@@ -6,6 +6,18 @@ class AssemblyLineItem < ApplicationRecord
   validates :quantity, presence: true, numericality: { greater_than: 0 }
   validate :exactly_one_primary_option
 
+  def primary_option
+    line_item_options.detect(&:is_primary?)
+  end
+
+  def primary_target
+    primary_option&.option
+  end
+
+  def alternate_options
+    line_item_options.reject(&:is_primary?)
+  end
+
   private
 
   def exactly_one_primary_option

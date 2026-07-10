@@ -1,0 +1,140 @@
+<% content_for :title, "#{@assembly.name} · Bonne Pioche" %>
+
+<p class="mb-4.5 flex items-center gap-2 text-[13px] text-text-muted">
+  <%= link_to "Assemblies", assemblies_path %>
+  <span class="text-text-faint">&rsaquo;</span>
+  <span class="text-text font-semibold"><%= @assembly.name %></span>
+</p>
+
+<% if notice %>
+  <div class="mb-5 px-4 py-2.75 rounded-sm text-[13.5px] border border-[#cfe0c8] bg-accent-soft text-accent-dark"><%= notice %></div>
+<% end %>
+
+<div class="flex items-start justify-between gap-5 mb-5.5">
+  <div>
+    <div class="flex items-center gap-3 flex-wrap">
+      <h1 class="m-0 text-[26px] font-bold tracking-tight"><%= @assembly.name %></h1>
+      <span class="status-badge <%= "status-badge-active" if @assembly.status == "active" %>"><%= @assembly.status.humanize %></span>
+      <% if @assembly.is_a?(GiftAssembly) && @assembly.tier.present? %>
+        <span class="chip"><%= AssembliesController::TIERS.fetch(@assembly.tier, @assembly.tier.humanize) %></span>
+      <% end %>
+    </div>
+    <p class="mt-1.5 mb-0 text-text-muted text-sm"><%= @assembly.sku %></p>
+  </div>
+  <div class="flex items-center gap-2.5 flex-wrap justify-end">
+    <%= link_to "Back", assemblies_path, class: "btn btn-tertiary" %>
+    <%= link_to "Clone", new_assembly_path(clone_from: @assembly.id), class: "btn btn-secondary" %>
+    <%= link_to "Edit", edit_assembly_path(@assembly), class: "btn btn-primary" %>
+  </div>
+</div>
+
+<% line_items = @assembly.assembly_line_items %>
+<% total_cost_cents = @assembly.unit_cost_cents %>
+<% total_msrp_cents = @assembly.unit_msrp_cents %>
+
+<div class="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-5 items-start">
+  <div class="card card-flush">
+    <h2 class="m-0 px-5 pt-5 pb-4 text-[15px] font-bold">Components</h2>
+
+    <% if line_items.any? %>
+      <div class="overflow-x-auto">
+        <table class="w-full min-w-[760px] border-collapse">
+          <thead>
+            <tr>
+              <th class="text-left px-3 py-2 text-xs font-bold uppercase tracking-wide text-text-faint bg-surface-alt border-b border-border w-10">#</th>
+              <th class="text-left px-3 py-2 text-xs font-bold uppercase tracking-wide text-text-faint bg-surface-alt border-b border-border">Component</th>
+              <th class="text-left px-3 py-2 text-xs font-bold uppercase tracking-wide text-text-faint bg-surface-alt border-b border-border">Item SKU + alternates</th>
+              <th class="text-left px-3 py-2 text-xs font-bold uppercase tracking-wide text-text-faint bg-surface-alt border-b border-border w-16">Qty</th>
+              <th class="text-left px-3 py-2 text-xs font-bold uppercase tracking-wide text-text-faint bg-surface-alt border-b border-border w-16">Unit</th>
+              <th class="text-left px-3 py-2 text-xs font-bold uppercase tracking-wide text-text-faint bg-surface-alt border-b border-border">Cost / unit</th>
+              <th class="text-left px-3 py-2 text-xs font-bold uppercase tracking-wide text-text-faint bg-surface-alt border-b border-border">MSRP</th>
+              <th class="text-left px-3 py-2 text-xs font-bold uppercase tracking-wide text-text-faint bg-surface-alt border-b border-border">Ext. cost</th>
+            </tr>
+          </thead>
+          <% line_items.each_with_index do |line_item, index| %>
+            <% is_sub_assembly = line_item.primary_target.is_a?(Assembly) %>
+            <tbody<%= ' data-controller="disclosure"'.html_safe if is_sub_assembly %>>
+              <%= render "bom_row", line_item: line_item, number: index + 1 %>
+              <% if is_sub_assembly %>
+                <% nested_items = line_item.primary_target.assembly_line_items %>
+                <% if nested_items.any? %>
+                  <% nested_items.each do |nested_item| %>
+                    <%= render "bom_row", line_item: nested_item, number: nil, indent: 1, nested: true %>
+                  <% end %>
+                <% else %>
+                  <tr class="hidden bg-surface-alt" data-disclosure-target="content">
+                    <td colspan="8" class="px-3 py-2.5 text-[13px] text-text-faint" style="padding-left: 32px;">No components in this sub-assembly.</td>
+                  </tr>
+                <% end %>
+              <% end %>
+            </tbody>
+          <% end %>
+          <tfoot>
+            <tr>
+              <td colspan="5" class="px-3 py-3 text-[13.5px] font-semibold text-text border-t-2 border-border">
+                Box total (<%= pluralize(line_items.size, "item") %>)
+              </td>
+              <td class="px-3 py-3 text-xs text-text-faint italic border-t-2 border-border align-middle">subtotal</td>
+              <td class="px-3 py-3 text-[13.5px] font-bold text-text border-t-2 border-border"><%= number_to_currency(total_msrp_cents / 100.0) %></td>
+              <td class="px-3 py-3 text-[13.5px] font-bold text-text border-t-2 border-border"><%= number_to_currency(total_cost_cents / 100.0) %></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    <% else %>
+      <div class="flex flex-col items-center gap-2 text-center py-14 px-6">
+        <p class="m-0 text-base font-bold">No components yet</p>
+        <p class="mb-2 text-text-muted text-[13.5px]">Add components to build this assembly's BOM.</p>
+        <%= link_to "Edit", edit_assembly_path(@assembly), class: "btn btn-primary" %>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="flex flex-col gap-5">
+    <div class="card">
+      <h2 class="m-0 mb-4 text-[15px] font-bold">Costing (per box)</h2>
+      <div class="flex flex-col gap-3">
+        <div class="flex items-center justify-between text-sm">
+          <span class="text-text-muted">Components</span>
+          <span class="text-text font-semibold"><%= number_to_currency(total_cost_cents / 100.0) %></span>
+        </div>
+        <div class="flex items-center justify-between text-sm">
+          <span class="text-text-muted">Total MSRP (parts)</span>
+          <span class="text-text font-semibold"><%= number_to_currency(total_msrp_cents / 100.0) %></span>
+        </div>
+        <% if @assembly.is_a?(GiftAssembly) %>
+          <div class="flex items-center justify-between text-sm pb-3 border-b border-dashed border-border">
+            <span class="text-text-muted">Retail price</span>
+            <span class="text-text-muted"><%= @assembly.msrp ? number_to_currency(@assembly.msrp) : "—" %></span>
+          </div>
+          <div class="flex items-center justify-between text-sm">
+            <span class="text-text font-semibold">Margin</span>
+            <% if @assembly.msrp.to_f > 0 %>
+              <span class="text-text font-bold"><%= number_to_percentage(((@assembly.msrp_cents - total_cost_cents) / @assembly.msrp_cents.to_f) * 100, precision: 0) %></span>
+            <% else %>
+              <span class="text-text-faint">—</span>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2 class="m-0 mb-4 text-[15px] font-bold">Restrictions</h2>
+      <% if @assembly.restrictions.any? %>
+        <div class="flex flex-wrap gap-1.5">
+          <% @assembly.restrictions.each do |restriction| %>
+            <span class="chip"><%= restriction.name %></span>
+          <% end %>
+        </div>
+      <% else %>
+        <span class="text-sm text-text-faint">None</span>
+      <% end %>
+    </div>
+
+    <div class="card">
+      <h2 class="m-0 mb-4 text-[15px] font-bold">Status</h2>
+      <span class="status-badge <%= "status-badge-active" if @assembly.status == "active" %>"><%= @assembly.status.humanize %></span>
+    </div>
+  </div>
+</div>

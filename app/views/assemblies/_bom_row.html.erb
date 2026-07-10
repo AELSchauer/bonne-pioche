@@ -1,0 +1,48 @@
+<%
+  indent = local_assigns[:indent] || 0
+  nested = local_assigns[:nested] || false
+  target = line_item.primary_target
+  is_sub_assembly = target.is_a?(Assembly)
+  unit_cost_cents = target&.unit_cost_cents
+  unit_msrp_cents = target&.unit_msrp_cents
+  ext_cost_cents = unit_cost_cents && unit_cost_cents * line_item.quantity
+  alternates = line_item.alternate_options.map(&:option).compact
+%>
+<tr class="align-top <%= nested ? "bg-surface-alt hidden" : "hover:bg-surface-alt" %>" <%= 'data-disclosure-target="content"'.html_safe if nested %>>
+  <td class="px-3 py-2.5 text-[13.5px] border-b border-border text-text-faint"><%= number %></td>
+  <td class="px-3 py-2.5 text-[13.5px] border-b border-border" style="padding-left: <%= 12 + indent * 20 %>px;">
+    <% if target.nil? %>
+      <span class="text-danger">Missing option</span>
+    <% elsif is_sub_assembly %>
+      <% if indent.zero? %>
+        <button type="button" class="inline-flex items-center mr-1 text-text-faint hover:text-text align-middle" data-action="click->disclosure#toggle" aria-label="Toggle components">
+          <svg data-disclosure-target="icon" class="inline-block w-5 h-5 transition-transform duration-150" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M9 6L15 12L9 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      <% end %>
+      <%= link_to target.name, assembly_path(target), class: "font-semibold text-text hover:underline" %>
+      <span class="chip ml-1.5">sub-assembly</span>
+    <% else %>
+      <span class="font-semibold text-text"><%= target.name %></span>
+    <% end %>
+  </td>
+  <td class="px-3 py-2.5 text-[13.5px] border-b border-border">
+    <% if target %>
+      <span class="text-text-muted"><%= target.sku %></span>
+    <% end %>
+    <% if alternates.any? %>
+      <p class="mt-1 mb-1 text-xs text-text-faint">primary</p>
+      <div class="flex flex-wrap gap-1">
+        <% alternates.each do |alt| %>
+          <span class="chip">alt <%= alt.sku %></span>
+        <% end %>
+      </div>
+    <% end %>
+  </td>
+  <td class="px-3 py-2.5 text-[13.5px] border-b border-border"><%= line_item.quantity %></td>
+  <td class="px-3 py-2.5 text-[13.5px] border-b border-border"><%= is_sub_assembly ? "set" : target&.unit_label %></td>
+  <td class="px-3 py-2.5 text-[13.5px] border-b border-border"><%= unit_cost_cents ? number_to_currency(unit_cost_cents / 100.0) : "—" %></td>
+  <td class="px-3 py-2.5 text-[13.5px] border-b border-border"><%= unit_msrp_cents ? number_to_currency(unit_msrp_cents / 100.0) : "—" %></td>
+  <td class="px-3 py-2.5 text-[13.5px] border-b border-border font-semibold text-text"><%= ext_cost_cents ? number_to_currency(ext_cost_cents / 100.0) : "—" %></td>
+</tr>

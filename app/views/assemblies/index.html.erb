@@ -14,66 +14,21 @@
     <p class="mt-1.5 mb-0 text-text-muted text-sm">Gift boxes and sub-assemblies built from components.</p>
   </div>
   <div class="flex items-center gap-2.5 flex-wrap justify-end">
-    <%= link_to "+ Add assembly", new_assembly_path, class: "btn btn-primary" %>
+    <%= link_to "+ Add assembly", new_assembly_path(type: @tab == "sub" ? "Assembly" : "GiftAssembly"), class: "btn btn-primary" %>
   </div>
 </div>
 
-<div class="card card-flush">
-  <% if @assemblies.any? %>
-    <div class="overflow-x-auto">
-      <table class="w-full min-w-[560px] border-collapse">
-        <thead>
-          <tr>
-            <th class="text-left px-5 py-3 text-xs font-bold uppercase tracking-wide text-text-faint bg-surface-alt border-b border-border">Name</th>
-            <th class="text-left px-5 py-3 text-xs font-bold uppercase tracking-wide text-text-faint bg-surface-alt border-b border-border">Type</th>
-            <th class="text-left px-5 py-3 text-xs font-bold uppercase tracking-wide text-text-faint bg-surface-alt border-b border-border">Deck / Card</th>
-            <th class="text-left px-5 py-3 text-xs font-bold uppercase tracking-wide text-text-faint bg-surface-alt border-b border-border">Restrictions</th>
-            <th class="text-left px-5 py-3 text-xs font-bold uppercase tracking-wide text-text-faint bg-surface-alt border-b border-border">Status</th>
-            <th class="text-left px-5 py-3 text-xs font-bold uppercase tracking-wide text-text-faint bg-surface-alt border-b border-border"></th>
-          </tr>
-        </thead>
-        <tbody>
-          <% @assemblies.each do |assembly| %>
-            <tr class="hover:bg-surface-alt">
-              <td class="px-5 py-3.5 text-[13.5px] border-b border-border align-middle font-semibold text-text"><%= assembly.name %></td>
-              <td class="px-5 py-3.5 text-[13.5px] border-b border-border align-middle"><%= AssembliesController::TYPES.fetch(assembly.type || "Assembly", assembly.type) %></td>
-              <td class="px-5 py-3.5 text-[13.5px] border-b border-border align-middle">
-                <% if assembly.is_a?(GiftAssembly) && assembly.card %>
-                  <%= "#{assembly.card.deck.name} › #{assembly.card.name}" %>
-                <% else %>
-                  <span class="text-text-faint">—</span>
-                <% end %>
-              </td>
-              <td class="px-5 py-3.5 text-[13.5px] border-b border-border align-middle">
-                <% if assembly.restrictions.any? %>
-                  <div class="flex flex-wrap gap-1.5">
-                    <% assembly.restrictions.each do |exclusion| %>
-                      <span class="chip"><%= exclusion.name %></span>
-                    <% end %>
-                  </div>
-                <% else %>
-                  <span class="text-text-faint">—</span>
-                <% end %>
-              </td>
-              <td class="px-5 py-3.5 text-[13.5px] border-b border-border align-middle">
-                <span class="status-badge <%= "status-badge-active" if assembly.status == "active" %>"><%= assembly.status.humanize %></span>
-              </td>
-              <td class="px-5 py-3.5 text-[13.5px] border-b border-border align-middle">
-                <div class="flex gap-2 justify-end">
-                  <%= link_to "Clone", new_assembly_path(clone_from: assembly.id), class: "btn btn-tertiary btn-sm" %>
-                  <%= link_to "Edit", edit_assembly_path(assembly), class: "btn btn-secondary btn-sm" %>
-                </div>
-              </td>
-            </tr>
-          <% end %>
-        </tbody>
-      </table>
-    </div>
-  <% else %>
-    <div class="flex flex-col items-center gap-2 text-center py-14 px-6">
-      <p class="m-0 text-base font-bold">No assemblies yet</p>
-      <p class="mb-2 text-text-muted text-[13.5px]">Add your first gift box or sub-assembly.</p>
-      <%= link_to "+ Add assembly", new_assembly_path, class: "btn btn-primary" %>
-    </div>
-  <% end %>
+<div class="flex items-center gap-1 border-b border-border mb-5">
+  <%= link_to "Gift assemblies", assemblies_path(tab: "gift"),
+        class: "px-4 py-2.5 text-[13.5px] font-semibold -mb-px border-b-2 #{@tab == "gift" ? "border-accent text-text" : "border-transparent text-text-muted hover:text-text"}" %>
+  <%= link_to "Sub-assemblies", assemblies_path(tab: "sub"),
+        class: "px-4 py-2.5 text-[13.5px] font-semibold -mb-px border-b-2 #{@tab == "sub" ? "border-accent text-text" : "border-transparent text-text-muted hover:text-text"}" %>
 </div>
+
+<% if @tab == "sub" %>
+  <%= render "assembly_table", assemblies: @assemblies, show_tier: false, add_type: "Assembly",
+        empty_title: "No sub-assemblies yet", empty_body: "Add a reusable bundle of components to nest inside gift boxes." %>
+<% else %>
+  <%= render "assembly_table", assemblies: @assemblies, show_tier: true, add_type: "GiftAssembly",
+        empty_title: "No gift assemblies yet", empty_body: "Add your first sellable gift box." %>
+<% end %>

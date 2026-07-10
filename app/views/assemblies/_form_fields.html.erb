@@ -49,6 +49,12 @@
         <label class="block mb-1.5 text-[13px] font-semibold text-text" for="assembly_msrp_url">MSRP URL</label>
         <%= f.text_field :msrp_url, placeholder: "https://…", id: "assembly_msrp_url", class: "field-input" %>
       </div>
+
+      <div>
+        <%= f.label :tier, "Tier", class: "block mb-1.5 text-[13px] font-semibold text-text" %>
+        <%= f.select :tier, options_for_select(AssembliesController::TIERS.map { |value, label| [ label, value ] }, @assembly.tier),
+              { include_blank: "Select tier" }, id: "assembly_tier", class: "field-input" %>
+      </div>
     </div>
 
     <div>

@@ -27,8 +27,8 @@
     </div>
 
     <div>
-      <label class="block mb-1.5 text-[13px] font-semibold text-text" for="component_unit">Unit of measure</label>
-      <%= select_tag "component[unit]", options_for_select(ComponentsController::UNITS, "ea"), id: "component_unit", class: "field-input" %>
+      <%= f.label :unit_of_measure, "Unit of measure", class: "block mb-1.5 text-[13px] font-semibold text-text" %>
+      <%= f.select :unit_of_measure, Component::UNIT_LABELS.map { |value, label| [ label, value ] }, {}, id: "component_unit_of_measure", class: "field-input" %>
       <p class="mt-1.5 text-xs text-text-faint">ea &middot; pack &middot; set &middot; g &middot; L</p>
     </div>
 
@@ -41,6 +41,26 @@
     <div>
       <%= f.label :supplier_id, "Supplier", class: "block mb-1.5 text-[13px] font-semibold text-text" %>
       <%= f.select :supplier_id, @suppliers.map { |supplier| [ supplier.name, supplier.id ] }, { include_blank: "— None —" }, id: "component_supplier_id", class: "field-input" %>
+    </div>
+  </div>
+</section>
+
+<section class="mb-7.5 last:mb-0">
+  <h2 class="m-0 mb-4 text-[15px] font-bold">Pricing</h2>
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-[22px] gap-y-5">
+    <% if @component.persisted? %>
+      <div>
+        <span class="block mb-1.5 text-[13px] font-semibold text-text">Cost per unit</span>
+        <% unit_cost_cents = @component.unit_cost_cents %>
+        <input class="field-input field-input-readonly" type="text" readonly tabindex="-1"
+               value="<%= unit_cost_cents ? number_to_currency(unit_cost_cents / 100.0) : "—" %>">
+        <p class="mt-1.5 text-xs text-text-faint">The highest cost/unit across this component's supplier SKUs.</p>
+      </div>
+    <% end %>
+
+    <div>
+      <%= f.label :msrp, "MSRP per unit", class: "block mb-1.5 text-[13px] font-semibold text-text" %>
+      <%= f.number_field :msrp, value: @component.msrp, min: 0, step: 0.01, class: "field-input" %>
     </div>
   </div>
 </section>
